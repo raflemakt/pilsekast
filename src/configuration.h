@@ -1,4 +1,4 @@
-#include "arduino.h"
+#include "Arduino.h"
 //   Konfigurasjon av aksesspunktsadresse.
 //   Endre denne dersom en ny ESP32 med ny MAC-adresse brukes for
 //   aksesspunktet.

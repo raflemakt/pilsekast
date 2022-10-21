@@ -4,11 +4,11 @@
 
 #include "Arduino.h"
 
-uint8_t ØLKAST_PKG_SIZE;
-bool check_ølkast_pkg_integrity(ØlkastPkg pkg);
+uint8_t OELKAST_PKG_SIZE;
+// bool check_oelkast_pkg_integrity(OelkastPkg pkg);
 
 
-typedef struct ØlkastPkg {
+typedef struct OelkastPkg {
     uint8_t pkg_header;
     uint8_t animation_mode;
     uint8_t color_r;
@@ -20,8 +20,8 @@ typedef struct ØlkastPkg {
     uint8_t envelope_d;
     uint8_t envelope_s;
     uint8_t envelope_r;
-} ØlkastPkg;
+} OelkastPkg;
 
 
-ØlkastPkg ølkast_pkg_from_binary((sizeof(ØlkastPkg)*) &binary_pkg);
+//OelkastPkg oelkast_pkg_from_binary((sizeof(OelkastPkg)*) &binary_pkg);
 
