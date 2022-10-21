@@ -1,9 +1,16 @@
 #include <Arduino.h>
+#include "LedStrip/LedStripShow.h"
 
 void node_setup(){
-    Serial.begin(9600);
+    Serial.begin(512000);
+    LedStrip_setup();
 }
 
 void node_main(){
-    Serial.write("hello from node.cpp");
+    
+    LedStrip_loop();
+
+
 }
+
+
