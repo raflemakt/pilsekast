@@ -1,0 +1,5 @@
+# Build files
+.pio/
+
+# IDE specific files
+.vscode/
