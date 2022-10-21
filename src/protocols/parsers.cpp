@@ -1,3 +1,3 @@
-#include "protocols/OelkastPkg.h"
-#include "protocols/TelepilsPkg.h"
+#include "OelkastPkg.h"
+#include "TelepilsPkg.h"
 
