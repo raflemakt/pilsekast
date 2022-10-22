@@ -1,12 +1,16 @@
+#pragma once
 
-enum ProtocolDescriptor : uint8_t{
+
+enum ProtocolDescriptor : uint8_t {
     // ØLKAST-pakketyper: Kommandoer for lys, aktuatorer e.l.
     OELKAST_LIGHT_SIMPLE = 2,
     OELKAST_LIGHT_ENVELOPED = 3,
     OELKAST_LIGHT_ANIMATION_MODE = 4,
     
     // TELEPILS-pakketyper: Rapportering av telemetriske data
-    TELEPILS_TEMPERATURE = 65
+    TELEPILS_ANNOUNCE = 64,
+    TELEPILS_NODE_STATUS = 65,
+    TELEPILS_TEMPERATURE = 70
 };
 
 

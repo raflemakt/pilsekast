@@ -1,11 +1,24 @@
-// TELEPILS - Telemetrisamband for Praktfult Illuminert Studentorchester
+// TELEPILS - Telemetriprotokoll for Illuminert Studentorchester
 
 #pragma once
 
-#include "Arduino.h"
+#include <Arduino.h>
 
-typedef struct TelepilsPkg {
+
+struct TelepilsAnnounce {
     uint8_t pkg_header;
-    uint8_t test_data;
-} TelepilsPkg;
+    uint8_t[6] node_mac_address;
+    char[32] node_name;             // <-- kan gjøres mer effektivt, men vi kan parse disse
+    char[32] instrument_type;       //     ved å fjerne "leading spaces"
+};
+
+struct TelepilsNodeStatus {
+    uint8_t pkg_header;
+    uint8_t battery_level;
+};
+
+struct TelepilsTemperature {
+    uint8_t pkg_header;
+    uint8_t temperature;
+};
 
