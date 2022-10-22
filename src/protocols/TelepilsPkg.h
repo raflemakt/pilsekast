@@ -7,9 +7,9 @@
 
 struct TelepilsAnnounce {
     uint8_t pkg_header;
-    uint8_t[6] node_mac_address;
-    char[32] node_name;             // <-- kan gjøres mer effektivt, men vi kan parse disse
-    char[32] instrument_type;       //     ved å fjerne "leading spaces"
+    uint8_t node_mac_address[6];
+    char node_name[32];             // <-- kan gjøres mer effektivt, men vi kan parse disse
+    char instrument_type[32];       //     ved å fjerne "leading spaces"
 };
 
 struct TelepilsNodeStatus {
