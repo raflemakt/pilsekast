@@ -26,7 +26,7 @@ struct OelkastLightEnveloped {
     uint8_t env_release_time;
 };
 
-struct OelkastAnimationMode {
+struct OelkastLightAnimationMode {
     uint8_t packet_type;
     uint8_t animation_mode;
     uint8_t parameter_1;    // <--- hmmm
