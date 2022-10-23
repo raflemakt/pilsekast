@@ -1,13 +1,6 @@
 #include "Arduino.h"
 
-// Denne sketsjen "main.cpp" brukes til å programmere både
-//   nodene (på instrumenter) og aksesspunktet (på basstromma).
-//   For å programmere aksesspunktet: la IS_ACCESS_POINT være definert.
-//   For å programmere node: kommenter linja ut.
-//#define IS_ACCESS_POINT
-
-
-// Importerer riktig headerfil avhengig av konfigurasjonen over
+// Importerer riktig headerfil avhengig av konfigurasjonen i "configuration.h"
 #ifdef IS_ACCESS_POINT
 #include "AP/access_point.h"
 #else

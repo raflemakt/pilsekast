@@ -1,4 +1,10 @@
 #include "Arduino.h"
+
+// Denne innstillingen velger om det er AP eller node som blir programmert.
+//   Dersom IS_ACCESS_POINT er definert ---> programmerer aksesspunkt (AP/basstromme)
+//   Dersom IS_ACCESS_POINT ikke er definert ---> programmerer node (instrument)
+#define IS_ACCESS_POINT                 // Kommenter ut/inn for å endre
+
 //   Konfigurasjon av aksesspunktsadresse.
 //   Endre denne dersom en ny ESP32 med ny MAC-adresse brukes for
 //   aksesspunktet.
