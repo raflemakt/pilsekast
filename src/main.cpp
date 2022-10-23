@@ -1,25 +1,19 @@
 #include "Arduino.h"
+#include "configuration.h"
 
-// Importerer riktig headerfil avhengig av konfigurasjonen i "configuration.h"
-#ifdef IS_ACCESS_POINT
 #include "AP/access_point.h"
-#else
 #include "node/node.h"
-#endif
+
 
 
 void setup(){
-  #ifdef IS_ACCESS_POINT
-  access_point_setup();
-  #else
-  node_setup();
-  #endif
+  if (DEBUG_PRINT_TO_SERIAL) Serial.begin(SERIAL_BAUD_RATE);
+
+  if (IS_ACCESS_POINT) access_point_setup();
+  if (!IS_ACCESS_POINT) node_setup();
 }
 
 void loop(){
-  #ifdef IS_ACCESS_POINT
-  access_point_main();
-  #else
-  node_main();
-  #endif
+  if (IS_ACCESS_POINT) access_point_main();
+  if (!IS_ACCESS_POINT) node_main();
 }
