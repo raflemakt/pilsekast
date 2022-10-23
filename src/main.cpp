@@ -8,8 +8,6 @@
 #endif
 
 
-
-
 void setup(){
   #ifdef IS_ACCESS_POINT
   access_point_setup();
