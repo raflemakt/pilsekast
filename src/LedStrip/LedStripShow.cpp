@@ -12,13 +12,13 @@ byte ColorG;
 byte ColorB;
 float Intensity;
 float duration;
-byte animationMode = 0;
+bool animationMode = false;
 int EnvAttack;
 int EnvDecay;
 int EnvSustain;
 int EnvRelease;
 int period = 20000;
-byte flag = 1;
+bool flag = true;
 unsigned long startMillis; // some global variables available anywhere in the program
 unsigned long currentMillis;
 
@@ -293,6 +293,7 @@ void LedStrip_setup()
 
     SetRandomSeed();
     startMillis = millis(); // initial start time
+    Serial.begin(9800);
 }
 
 void LedStrip_loop()
@@ -302,8 +303,15 @@ void LedStrip_loop()
         currentMillis = millis();                  // get the current "time" (actually the number of milliseconds since the program started)
         if (currentMillis - startMillis >= period) // test whether the period has elapsed
         {
-            animationMode++;
-            
+            animationMode=!animationMode;
+            for (byte Led = 0; Led <= PixelCount; Led++)
+            {
+                RgbColor black(0);
+                strip.SetPixelColor(Led, black);
+            }
+            Serial.println("Lights off");
+            strip.Show();
+
             startMillis = currentMillis; // IMPORTANT to save the start time of the current LED state.
         }
     }
@@ -312,10 +320,11 @@ void LedStrip_loop()
 
     case false:
 
-        if (flag == 1)
+        if (flag == true)
         {
             animations1.StartAnimation(0, NextPixelMoveDuration, LoopAnimUpdate);
-            flag = 0;
+            flag = false;
+            Serial.println("Animation1 start");
         }
 
         animations1.UpdateAnimations();
@@ -324,9 +333,10 @@ void LedStrip_loop()
         break;
 
     case true:
-        if (flag == 0)
+        if (flag == false)
         {
-            flag = 1;
+            flag = true;
+            Serial.println("Animation2Start");
         }
 
         if (animations2.IsAnimating())
