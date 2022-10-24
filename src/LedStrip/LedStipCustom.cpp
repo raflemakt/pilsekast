@@ -90,25 +90,22 @@ void LedStripCustom_setup()
 void LedStripCustom_loop()
 {
     button.loop(); // MUST call the loop() function first
-    if (button.isPressed())
+    unsigned long currentlyMillis = millis();
+    while (millis() - currentlyMillis <= longevity)
     {
-        unsigned long currentlyMillis = millis();
-        while (millis() - currentlyMillis <= longevity)
+        Serial.println("The button is pressed");
+        if (animations.IsAnimating())
         {
-            Serial.println("The button is pressed");
-            if (animations.IsAnimating())
-            {
-                // the normal loop just needs these two to run the active animations
-                animations.UpdateAnimations();
-                strip1.Show();
-            }
-            else
-            {
-                // no animation runnning, start some
-                //
-                TurnOnOffStrip(intensity, longevity); // 0.0 = black, 0.25 is normal, 0.5 is bright
-            }
+            // the normal loop just needs these two to run the active animations
+            animations.UpdateAnimations();
             strip1.Show();
         }
+        else
+        {
+            // no animation runnning, start some
+            //
+            TurnOnOffStrip(intensity, longevity); // 0.0 = black, 0.25 is normal, 0.5 is bright
+        }
+        strip1.Show();
     }
 }
