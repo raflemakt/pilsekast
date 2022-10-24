@@ -1,34 +1,19 @@
 #include "Arduino.h"
+#include "configuration.h"
 
-// Denne sketsjen "main.cpp" brukes til å programmere både
-//   nodene (på instrumenter) og aksesspunktet (på basstromma).
-//   For å programmere aksesspunktet: la IS_ACCESS_POINT være definert.
-//   For å programmere node: kommenter linja ut.
-#define IS_ACCESS_POINT
-
-
-// Importerer riktig headerfil avhengig av konfigurasjonen over
-#ifdef IS_ACCESS_POINT
 #include "AP/access_point.h"
-#else
-#include "node.h"
-#endif
-
+#include "node/node.h"
 
 
 
 void setup(){
-  #ifdef IS_ACCESS_POINT
-  access_point_setup();
-  #else
-  node_setup();
-  #endif
+  if (DEBUG_PRINT_TO_SERIAL) Serial.begin(SERIAL_BAUD_RATE);
+
+  if (IS_ACCESS_POINT) AccessPoint::setup();
+  if (!IS_ACCESS_POINT) Node::setup();
 }
 
 void loop(){
-  #ifdef IS_ACCESS_POINT
-  access_point_main();
-  #else
-  node_main();
-  #endif
+  if (IS_ACCESS_POINT) AccessPoint::main();
+  if (!IS_ACCESS_POINT) Node::main();
 }
