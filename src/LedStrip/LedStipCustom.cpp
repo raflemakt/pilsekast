@@ -1,7 +1,6 @@
 #include "Arduino.h"
 #include "NeoPixelBus.h"
 #include <NeoPixelAnimator.h>
-#include <ezButton.h>
 
 const uint16_t PixelCount = 22;      // make sure to set this to the number of pixels in your strip
 const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
@@ -13,7 +12,6 @@ float intensity = 0.25;
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip1(PixelCount, PixelPin);
 NeoPixelAnimator animations(AnimationChannels); // NeoPixel animation management object
-ezButton button(21);
 
 struct MyAnimationState
 {
@@ -78,7 +76,6 @@ void LedStripCustom_setup()
     strip1.Begin();
     strip1.Show();
     Serial.begin(9800);
-    button.setDebounceTime(50);
     for (byte Led = 0; Led <= PixelCount; Led++)
     {
         RgbColor black(0);
@@ -89,7 +86,6 @@ void LedStripCustom_setup()
 
 void LedStripCustom_loop()
 {
-    button.loop(); // MUST call the loop() function first
     unsigned long currentlyMillis = millis();
     while (millis() - currentlyMillis <= longevity)
     {
