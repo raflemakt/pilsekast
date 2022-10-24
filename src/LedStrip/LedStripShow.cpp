@@ -5,7 +5,7 @@
 
 #include <NeoPixelAnimator.h>
 const uint16_t PixelCount = 22; // make sure to set this to the number of pixels in your strip
-const uint16_t PixelPin = 2;    // make sure to set this to the correct pin, ignored for Esp8266
+const uint16_t PixelPin = 4;    // make sure to set this to the correct pin, ignored for Esp8266
 const RgbColor CylonEyeColor(HtmlColor(0x7f0000));
 byte ColorR;
 byte ColorG;
@@ -23,10 +23,6 @@ unsigned long startMillis; // some global variables available anywhere in the pr
 unsigned long currentMillis;
 
 // include voids from other default animations in NeoPixelLibrary
-
-void write(byte colorR, byte colorG, byte colorB, float intensity, float duration, byte animationMode, int EnvAttack, int EnvDecay, int EnvSustain, int EnvRelease)
-{
-}
 
 // Loop parameters
 const uint16_t AnimCount = PixelCount / 5 * 2 + 1; // we only need enough animations for the tail and one extra
@@ -303,13 +299,13 @@ void LedStrip_loop()
         currentMillis = millis();                  // get the current "time" (actually the number of milliseconds since the program started)
         if (currentMillis - startMillis >= period) // test whether the period has elapsed
         {
-            animationMode=!animationMode;
+            animationMode = !animationMode;
             for (byte Led = 0; Led <= PixelCount; Led++)
             {
                 RgbColor black(0);
                 strip.SetPixelColor(Led, black);
             }
-            Serial.println("Lights off");
+
             strip.Show();
 
             startMillis = currentMillis; // IMPORTANT to save the start time of the current LED state.
@@ -324,7 +320,6 @@ void LedStrip_loop()
         {
             animations1.StartAnimation(0, NextPixelMoveDuration, LoopAnimUpdate);
             flag = false;
-            Serial.println("Animation1 start");
         }
 
         animations1.UpdateAnimations();
@@ -336,7 +331,6 @@ void LedStrip_loop()
         if (flag == false)
         {
             flag = true;
-            Serial.println("Animation2Start");
         }
 
         if (animations2.IsAnimating())
