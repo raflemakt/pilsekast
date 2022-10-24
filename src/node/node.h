@@ -1,5 +1,7 @@
 #pragma once
 
-void node_setup();
-void node_main();
-
+namespace Node
+{
+void setup();
+void main();
+}
