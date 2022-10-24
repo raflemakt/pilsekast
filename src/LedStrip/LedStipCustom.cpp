@@ -8,7 +8,7 @@ const uint16_t PixelPin = 4;         // make sure to set this to the correct pin
 const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
 boolean fading = true;               // general purpose variable used to store effect state
 unsigned long startingMillis;        // some global variables available anywhere in the program
-float duration = 700;
+float longevity = 700;
 float intensity = 0.25;
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip1(PixelCount, PixelPin);
@@ -41,7 +41,7 @@ void BlendAnimationUpdate(const AnimationParam &param)
     }
 }
 
-void TurnOnOffStrip(float luminance, float duration)
+void TurnOnOffStrip(float luminance, float longevity)
 {
 
     if (fading)
@@ -51,7 +51,7 @@ void TurnOnOffStrip(float luminance, float duration)
         // with the same saturation and luminance so the colors picked
         // will have similiar overall brightness
         RgbColor target = HslColor(120 / 360.0f, 1.0f, luminance);
-        uint16_t time = duration;
+        uint16_t time = longevity;
 
         animationState[0].StartingColor = strip1.GetPixelColor(0);
         animationState[0].EndingColor = target;
@@ -61,7 +61,7 @@ void TurnOnOffStrip(float luminance, float duration)
     else
     {
         // fade to black
-        uint16_t time = duration;
+        uint16_t time = longevity;
 
         animationState[0].StartingColor = strip1.GetPixelColor(0);
         animationState[0].EndingColor = RgbColor(0);
@@ -73,7 +73,7 @@ void TurnOnOffStrip(float luminance, float duration)
     fading = !fading;
 }
 
-void setup()
+void LedStripCustom_setup()
 {
     strip1.Begin();
     strip1.Show();
@@ -87,13 +87,13 @@ void setup()
     strip1.Show();
 }
 
-void loop()
+void LedStripCustom_loop()
 {
     button.loop(); // MUST call the loop() function first
     if (button.isPressed())
     {
         unsigned long currentlyMillis = millis();
-        while (millis() - currentlyMillis <= duration)
+        while (millis() - currentlyMillis <= longevity)
         {
             Serial.println("The button is pressed");
             if (animations.IsAnimating())
@@ -106,7 +106,7 @@ void loop()
             {
                 // no animation runnning, start some
                 //
-                TurnOnOffStrip(intensity, duration); // 0.0 = black, 0.25 is normal, 0.5 is bright
+                TurnOnOffStrip(intensity, longevity); // 0.0 = black, 0.25 is normal, 0.5 is bright
             }
             strip1.Show();
         }
