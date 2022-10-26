@@ -7,17 +7,11 @@ namespace Node
 {
     void on_local_data_receive()
     {
-        Serial.print("Received data: ");
-        Serial.write(LocalNetworkInterface::transmission_buffer, BIN);
-        Serial.println("\n");
         LedStripCustom_loop();
     }
 
     void on_local_data_send()
     {
-        Serial.println("Sent data: ");
-        Serial.write(LocalNetworkInterface::transmission_buffer, BIN);
-        Serial.println("\n");
     }
 
     void setup()
