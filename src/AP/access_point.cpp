@@ -3,6 +3,7 @@
 #include "../configuration.h"
 #include "network/LocalNetworkInterface.h"
 #include "UserInterface/StringFormatters.h"
+#include "UserInterface/Messages.h"
 
 
 namespace AccessPoint
@@ -10,27 +11,19 @@ namespace AccessPoint
 uint32_t program_counter = 0;
 
 
-void test_print(){
-    // TODO: lag ordentlig oppstartsmelding og flytt til printing
-    Serial.println("\nPILSEKAST ACCESS POINT BOOT");
-    Serial.print("  node name: ");
-    Serial.println(NODE_NAME);
-    Serial.print("  intrument type: ");
-    Serial.println(INSTRUMENT_TYPE);
-    Serial.println();
-}
-
 void on_local_data_receive() {
+    Serial.println("  on_local_data_receive called");
 }
 
 void on_local_data_send() {
+    Serial.println("  on_local_data_send called");
 }
 
 
 void setup(){
     pinMode(0, INPUT_PULLUP);
 
-    test_print();
+    Messages::on_boot();
     LocalNetworkInterface::initialize();
     LocalNetworkInterface::register_recv_callback(on_local_data_receive);
     LocalNetworkInterface::register_send_callback(on_local_data_send);

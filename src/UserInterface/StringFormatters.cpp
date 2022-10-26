@@ -17,6 +17,8 @@ String byte_to_ascii_hex(byte input_byte) {
 }
 
 String mac_addr_from_array(const uint8_t *mac_addr) {
+    if (mac_addr == 0) return "ff:ff:ff:ff:ff:ff (broadcast)";
+
     String temp_buffer;
     char separator = ':';
 

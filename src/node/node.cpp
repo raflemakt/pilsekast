@@ -2,22 +2,26 @@
 #include "LedStrip/LedStripShow.h"
 #include "network/LocalNetworkInterface.h"
 #include "LedStrip/LedStripCustom.h"
+#include "UserInterface/Messages.h"
 
 namespace Node
 {
     void on_local_data_receive()
     {
+        Serial.println("  on_local_data_receive called");
         LedStripCustom_loop();
     }
 
     void on_local_data_send()
     {
+        Serial.println("  on_local_data_send called");
     }
 
     void setup()
     {
         pinMode(0, INPUT_PULLUP);
 
+        Messages::on_boot();
         LocalNetworkInterface::initialize();
         LocalNetworkInterface::register_recv_callback(on_local_data_receive);
         LocalNetworkInterface::register_send_callback(on_local_data_send);
@@ -26,7 +30,7 @@ namespace Node
         uint8_t test_data = 32;
         LocalNetworkInterface::send_binary_package(AP_MAC_ADDRESS, &test_data, 1);
 
-        LedStripCustom_setup(); // FIXME: pin 2 kræsjer med radiokommunikasjon
+        LedStripCustom_setup();
     }
 
     void main()

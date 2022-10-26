@@ -108,10 +108,6 @@ void initialize(){
     Serial.println(esp_now_status::init, BIN);
 
     if (!IS_ACCESS_POINT) add_address_to_peers(AP_MAC_ADDRESS);
-    esp_now_get_peer_num(&peer_num);
-
-    Serial.print("  number of peers: ");
-    Serial.println(peer_num.total_num);
 
     esp_now_status::register_recv_callback = esp_now_register_recv_cb(esp_now_on_data_receive);
     esp_now_status::register_send_callback = esp_now_register_send_cb(esp_now_on_data_sent);
