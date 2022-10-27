@@ -16,11 +16,13 @@ namespace esp_now_status {
 esp_now_peer_info_t peer_buffer = {};
 esp_now_peer_num_t peer_num;
 
-void(* user_configured_recv_cb)();
-void(* user_configured_send_cb)();
+
+LocalNetworkInterface::UserCallbackFunction user_configured_recv_cb;
+LocalNetworkInterface::UserCallbackFunction user_configured_send_cb;
 
 uint8_t LocalNetworkInterface::transmission_buffer[TRANSMISSION_BUFFER_SIZE] = {0};
 uint8_t LocalNetworkInterface::transmission_size;
+
 
 void move_data_to_buffer(const uint8_t *data, const uint8_t size) {
     if (size > TRANSMISSION_BUFFER_SIZE){
@@ -120,12 +122,12 @@ void initialize(){
     Serial.println();
 }
 
-void register_recv_callback(void( *callback_function)()) {
+void register_recv_callback(UserCallbackFunction callback_function) {
     Serial.println("  user recv cb registered");
     user_configured_recv_cb = callback_function;
 }
 
-void register_send_callback(void( *callback_function)()) {
+void register_send_callback(UserCallbackFunction callback_function) {
     Serial.println("  user send cb registered");
     user_configured_send_cb = callback_function;
 }
