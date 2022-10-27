@@ -31,14 +31,21 @@ void move_data_to_buffer(const uint8_t *data, const uint8_t size) {
     }
 
     memset(&LocalNetworkInterface::transmission_buffer, 0, TRANSMISSION_BUFFER_SIZE);  // <-- strengt tatt unødvendig
-    memcpy(&LocalNetworkInterface::transmission_buffer, &data, size);
+    memcpy(&LocalNetworkInterface::transmission_buffer, data, size);
     LocalNetworkInterface::transmission_size = size;
 
     Serial.println("  overwriting transmission buffer");
     Serial.print("    bytes: ");
     Serial.println(size);
-    Serial.print("    data: ");
-    Serial.println(Format::transmission_buffer(size));
+
+    Serial.print("    data passed to function: ");
+    Serial.println(Format::array_as_decimal(data, size));
+
+    Serial.print("    transmission buffer (dec): ");
+    Serial.println(Format::array_as_decimal(LocalNetworkInterface::transmission_buffer, size));
+
+    Serial.print("    transmission buffer (hex): ");
+    Serial.println(Format::array_as_hex(LocalNetworkInterface::transmission_buffer, size));
 }
 
 void add_address_to_peers(const uint8_t *mac_addr) {

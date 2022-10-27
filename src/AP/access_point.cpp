@@ -6,11 +6,17 @@
 #include "UserInterface/Messages.h"
 
 
+struct TestData {
+    uint8_t a;
+    uint8_t b;
+    uint16_t c;
+};
+TestData test_data;
+uint8_t test_data_array[sizeof(TestData)];
+
+
 namespace AccessPoint
 {
-uint32_t program_counter = 0;
-
-
 void on_local_data_receive() {
     Serial.println("  on_local_data_receive called");
 }
@@ -28,15 +34,21 @@ void setup(){
     LocalNetworkInterface::register_recv_callback(on_local_data_receive);
     LocalNetworkInterface::register_send_callback(on_local_data_send);
     Serial.println("Init complete from access_point.cpp --> starting loop.\n");
-    
+
+    test_data.a = 0;
+    test_data.b = 123;
+    test_data.c = 45678;
 }
 
-uint8_t test_data_num = 75;
+
 void main(){
     if(!digitalRead(0)) {
-        LocalNetworkInterface::send_binary_package(0, &test_data_num, sizeof(test_data_num));
-        delay(150); // hehehe
+        memcpy(test_data_array, &test_data, sizeof(test_data));
+        LocalNetworkInterface::send_binary_package(0, test_data_array, sizeof(test_data));
+        test_data.a++;
+
+        // we have button debounce at home
+        delay(150); // <-- button debounce at home
     }
-    program_counter++;
 }
 }

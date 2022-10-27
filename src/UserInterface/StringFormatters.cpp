@@ -5,7 +5,7 @@
 
 namespace Format
 {
-String byte_to_ascii_hex(byte input_byte) {
+String byte_to_ascii_hex(uint8_t input_byte) {
     String temp_buffer;
     int msb = input_byte / 16;
     int lsb = input_byte - (msb*16);
@@ -24,20 +24,31 @@ String mac_addr_from_array(const uint8_t *mac_addr) {
 
     for (auto i = 0; i<6; i++){
         temp_buffer += byte_to_ascii_hex(mac_addr[i]);
-        if (i != 5 || i%2==0) temp_buffer += separator;
+        if (i != 5) temp_buffer += separator;
     }
     return temp_buffer;
 }
 
-String transmission_buffer(int size) {
-    String temp_buffer = String(size);
+String array_as_hex(const uint8_t* data, const int size) {
+    String temp_buffer;
     char separator = ' ';
 
-    for (auto i = 0; i<size; i++) {
+    for (auto i=0; i<size; i++) {
         temp_buffer += byte_to_ascii_hex(
-            LocalNetworkInterface::transmission_buffer[i]
+            data[i]
         );
-        if (i < size || i%2==0) temp_buffer += separator;
+        if (i < size-1) temp_buffer += separator;
+    }
+    return temp_buffer;
+}
+
+String array_as_decimal(const uint8_t* data, const int size) {
+    String temp_buffer;
+    char separator = ' ';
+
+    for (auto i=0; i<size; i++) {
+        temp_buffer += data[i];
+        if (i < size-1) temp_buffer += separator;
     }
     return temp_buffer;
 }
