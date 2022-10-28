@@ -3,7 +3,7 @@
 const int drum = 33;
 const unsigned long waitTime = 200;
 const int minHit = 100;
-const int maxHit = 1000;
+const int maxHit = 1500;
 
 int hitSignal;
 int hitIntensity;
@@ -11,7 +11,7 @@ unsigned long hitWait = 0;
 int maxSignal = 0;
 bool inHit = false;
 
-int getDrumSensor()
+uint8_t getDrumSensor()
 {
     // put your main code here, to run repeatedly:
     if (millis() - hitWait > waitTime)
@@ -33,13 +33,14 @@ int getDrumSensor()
                 {
                     maxSignal = maxHit;
                 }
-                hitIntensity = map(maxSignal, minHit, maxHit, 1, 100);
+                hitIntensity = map(maxSignal, minHit, maxHit, 1, 255);
                 Serial.print("Hit intensity : ");
                 Serial.println(hitIntensity);
                 inHit = false;
                 maxSignal = 0;
                 hitWait = millis();
-                return hitIntensity;
+                uint8_t hitIntensityx = hitIntensity;
+                return hitIntensityx;
             }
         }
     }

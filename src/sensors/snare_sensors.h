@@ -1,3 +1,3 @@
 #pragma once
 
-int getDrumSensor();
+uint8_t getDrumSensor();

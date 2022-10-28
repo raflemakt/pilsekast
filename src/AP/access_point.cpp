@@ -9,7 +9,7 @@
 struct TestData
 {
     uint8_t a;
-    int b;
+    uint8_t b;
     uint16_t c;
 };
 TestData test_data;
@@ -44,7 +44,7 @@ namespace AccessPoint
 
     void main()
     {
-        int drum_reading = getDrumSensor();
+        uint8_t drum_reading = getDrumSensor();
         test_data.b = drum_reading;
         // if(!digitalRead(0)) {
         if (drum_reading > 0)
@@ -56,6 +56,5 @@ namespace AccessPoint
             // we have button debounce at home
             // delay(150); // <-- button debounce at home
         }
-
     }
 }
