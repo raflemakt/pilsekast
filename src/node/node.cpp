@@ -9,7 +9,7 @@ namespace Node
     void on_local_data_receive()
     {
         Serial.println("  on_local_data_receive called");
-        LedStripCustom_loop();
+        TurnOnStrip(0.25,5);
     }
 
     void on_local_data_send()
@@ -41,5 +41,6 @@ namespace Node
             LocalNetworkInterface::send_binary_package(AP_MAC_ADDRESS, &test_data, 1);
             delay(150); // neiognei
         }
+    LedStripCustomUpdate(0.25,90);  
     }
 }

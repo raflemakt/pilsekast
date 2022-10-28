@@ -1,15 +1,14 @@
 #include "Arduino.h"
 #include "NeoPixelBus.h"
 #include <NeoPixelAnimator.h>
+#include "LedStripCustom.h"
 
-const uint16_t PixelCount = 22;      // make sure to set this to the number of pixels in your strip
-const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
-const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
-boolean fading = true;               // general purpose variable used to store effect state
-unsigned long startingMillis = millis();        // some global variables available anywhere in the program
-float longevity = 700;
+const uint16_t PixelCount = 22;          // make sure to set this to the number of pixels in your strip
+const uint16_t PixelPin = 4;             // make sure to set this to the correct pin, ignored for Esp8266
+const uint8_t AnimationChannels = 1;     // we only need one as all the pixels are animated at once
+unsigned long startingMillis = millis(); // some global variables available anywhere in the program
 float intensity = 0.25;
-
+int flag1=1;
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip1(PixelCount, PixelPin);
 NeoPixelAnimator animations(AnimationChannels); // NeoPixel animation management object
@@ -40,43 +39,36 @@ void BlendAnimationUpdate(const AnimationParam &param)
     }
 }
 
-void TurnOnOffStrip(float luminance, float longevity)
+
+
+void TurnOnStrip(float luminance, float longevity)
 {
+    RgbColor target = HslColor(120 / 360.0f, 1.0f, luminance);
+    uint16_t time = longevity;
 
-    if (fading)
-    {
-        // Fade upto a random color
-        // we use HslColor object as it allows us to easily pick a hue
-        // with the same saturation and luminance so the colors picked
-        // will have similiar overall brightness
-        RgbColor target = HslColor(120 / 360.0f, 1.0f, luminance);
-        uint16_t time = longevity;
+    animationState[0].StartingColor = strip1.GetPixelColor(0);
+    animationState[0].EndingColor = target;
 
-        animationState[0].StartingColor = strip1.GetPixelColor(0);
-        animationState[0].EndingColor = target;
-
-        animations.StartAnimation(0, time, BlendAnimationUpdate);
-    }
-    else
-    {
-        // fade to black
-        uint16_t time = longevity;
-
-        animationState[0].StartingColor = strip1.GetPixelColor(0);
-        animationState[0].EndingColor = RgbColor(0);
-
-        animations.StartAnimation(0, time, BlendAnimationUpdate);
-    }
-
-    // toggle to the next effect state
-    fading = !fading;
+    animations.StartAnimation(0, time, BlendAnimationUpdate);
+    strip1.Show();
+    flag1=1;
 }
 
-void LedStripCustom_setup()
+void TurnOffStrip(float luminance, float longevity)
 {
-    strip1.Begin();
+    // fade to black
+    uint16_t time = longevity;
+
+    animationState[0].StartingColor = strip1.GetPixelColor(0);
+    animationState[0].EndingColor = RgbColor(0);
+
+    animations.StartAnimation(0, time, BlendAnimationUpdate);
     strip1.Show();
-    Serial.begin(9800);
+    flag1=0;
+}
+
+void TurnOffMasterStrip()
+{
     for (byte Led = 0; Led <= PixelCount; Led++)
     {
         RgbColor black(0);
@@ -85,28 +77,34 @@ void LedStripCustom_setup()
     strip1.Show();
 }
 
+void LedStripCustom_setup()
+{
+    strip1.Begin();
+    strip1.Show();
+    TurnOffMasterStrip();
+}
+
+void LedStripCustomUpdate(float light,float time)
+{
+    // the normal loop just needs these two to run the active animations
+    if (animations.IsAnimating())
+    {
+    animations.UpdateAnimations();
+    strip1.Show();
+    }
+
+    else
+    {
+    if(flag1 == 1)
+    {
+    TurnOffStrip(light,time);
+    }
+    }
+}
+
 void LedStripCustom_loop()
 {
-    unsigned long currentlyMillis = millis();
-    if (currentlyMillis - startingMillis <= longevity)
-    {
-        Serial.println("The button is pressed");
-        if (animations.IsAnimating())
-        {
-            // the normal loop just needs these two to run the active animations
-            animations.UpdateAnimations();
-            strip1.Show();
-        }
-        else
-        {
-            // no animation runnning, start some
-            //
-            TurnOnOffStrip(intensity, longevity); // 0.0 = black, 0.25 is normal, 0.5 is bright
-        }
-        strip1.Show();
-    }
-    if (currentlyMillis - startingMillis >= longevity)
-    {
-        startingMillis = millis();
-    }
+    
+LedStripCustomUpdate(0.25,500);
+
 }
