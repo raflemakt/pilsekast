@@ -6,9 +6,10 @@ const uint16_t PixelCount = 22;      // make sure to set this to the number of p
 const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
 const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
 boolean fading = true;               // general purpose variable used to store effect state
-unsigned long startingMillis;        // some global variables available anywhere in the program
+unsigned long startingMillis = millis();        // some global variables available anywhere in the program
 float longevity = 700;
 float intensity = 0.25;
+
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip1(PixelCount, PixelPin);
 NeoPixelAnimator animations(AnimationChannels); // NeoPixel animation management object
@@ -87,7 +88,7 @@ void LedStripCustom_setup()
 void LedStripCustom_loop()
 {
     unsigned long currentlyMillis = millis();
-    while (millis() - currentlyMillis <= longevity)
+    if (currentlyMillis - startingMillis <= longevity)
     {
         Serial.println("The button is pressed");
         if (animations.IsAnimating())
@@ -103,5 +104,9 @@ void LedStripCustom_loop()
             TurnOnOffStrip(intensity, longevity); // 0.0 = black, 0.25 is normal, 0.5 is bright
         }
         strip1.Show();
+    }
+    if (currentlyMillis - startingMillis >= longevity)
+    {
+        startingMillis = millis();
     }
 }
