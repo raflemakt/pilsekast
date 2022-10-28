@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TelepilsPkg.h"
+#include "OelkastPkg.h"
 
 enum ProtocolDescriptor : uint8_t {
     // ØLKAST-pakketyper: Kommandoer for lys, aktuatorer e.l.
@@ -12,6 +14,7 @@ enum ProtocolDescriptor : uint8_t {
     TELEPILS_NODE_STATUS = 65,
     TELEPILS_TEMPERATURE = 70
 };
+
 
 
 // TODO: Plan for parsers.h og parsers.cpp
