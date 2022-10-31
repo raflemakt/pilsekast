@@ -1,7 +1,6 @@
 #include "StringFormatters.h"
 #include "Arduino.h"
 #include "configuration.h"
-#include "network/LocalNetworkInterface.h"
 
 namespace Format
 {

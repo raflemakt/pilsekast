@@ -8,9 +8,7 @@
 struct OelkastLightSimple {
     uint8_t packet_type;
     uint8_t intensity;
-    uint8_t color_red;
-    uint8_t color_green;
-    uint8_t color_blue;
+    uint8_t duration;
 };
 
 struct OelkastLightEnveloped {

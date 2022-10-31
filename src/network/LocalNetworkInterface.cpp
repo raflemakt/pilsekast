@@ -3,6 +3,7 @@
 
 #include "LocalNetworkInterface.h"
 #include "UserInterface/StringFormatters.h"
+#include "network/PacketHandler.h"
 
 
 namespace esp_now_status {
@@ -23,30 +24,6 @@ LocalNetworkInterface::UserCallbackFunction user_configured_send_cb;
 uint8_t LocalNetworkInterface::transmission_buffer[TRANSMISSION_BUFFER_SIZE] = {0};
 uint8_t LocalNetworkInterface::transmission_size;
 
-
-void move_data_to_buffer(const uint8_t *data, const uint8_t size) {
-    if (size > TRANSMISSION_BUFFER_SIZE){
-        Serial.println("  discard data: too large for buffer");
-        return;
-    }
-
-    memset(&LocalNetworkInterface::transmission_buffer, 0, TRANSMISSION_BUFFER_SIZE);  // <-- strengt tatt unødvendig
-    memcpy(&LocalNetworkInterface::transmission_buffer, data, size);
-    LocalNetworkInterface::transmission_size = size;
-
-    Serial.println("  overwriting transmission buffer");
-    Serial.print("    bytes: ");
-    Serial.println(size);
-
-    Serial.print("    data passed to function: ");
-    Serial.println(Format::array_as_decimal(data, size));
-
-    Serial.print("    transmission buffer (dec): ");
-    Serial.println(Format::array_as_decimal(LocalNetworkInterface::transmission_buffer, size));
-
-    Serial.print("    transmission buffer (hex): ");
-    Serial.println(Format::array_as_hex(LocalNetworkInterface::transmission_buffer, size));
-}
 
 void add_address_to_peers(const uint8_t *mac_addr) {
     if (!esp_now_is_peer_exist(mac_addr)) {
@@ -92,7 +69,8 @@ void esp_now_on_data_receive(const uint8_t *mac_addr, const uint8_t *incoming_da
     Serial.println(bytes_received);
     
     add_address_to_peers(mac_addr);
-    move_data_to_buffer(incoming_data, bytes_received);
+    PacketHandler::move_data_to_buffer(incoming_data, bytes_received);
+    PacketHandler::move_data_to_register();
     user_configured_recv_cb();
 }
 
@@ -141,7 +119,7 @@ void send_binary_package(const uint8_t *peer_addr, const uint8_t *data, size_t l
     Serial.print("  destination: ");
     Serial.println(Format::mac_addr_from_array(peer_addr));
 
-    move_data_to_buffer(data, len);
+    PacketHandler::move_data_to_buffer(data, len);
     esp_err_t result = esp_now_send(peer_addr, data, len);
     LocalNetworkInterface::transmission_size = len;
 

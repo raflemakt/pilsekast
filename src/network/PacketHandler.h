@@ -1,7 +1,7 @@
 #pragma once
 
-#include "TelepilsPkg.h"
-#include "OelkastPkg.h"
+#include "network/protocols/TelepilsPkg.h"
+#include "network/protocols/OelkastPkg.h"
 
 enum ProtocolDescriptor : uint8_t {
     // ØLKAST-pakketyper: Kommandoer for lys, aktuatorer e.l.
@@ -15,7 +15,11 @@ enum ProtocolDescriptor : uint8_t {
     TELEPILS_TEMPERATURE = 70
 };
 
-
+namespace PacketHandler
+{
+void move_data_to_buffer(const uint8_t *data, const uint8_t size);
+void move_data_to_register();
+}
 
 // TODO: Plan for parsers.h og parsers.cpp
 // Vi må bestemme ølkast/telepils-header (packet_type)

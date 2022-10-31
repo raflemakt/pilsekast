@@ -1,0 +1,10 @@
+#pragma once
+
+
+extern TelepilsAnnounce telepils_announce;
+extern TelepilsNodeStatus telepils_node_status;
+extern TelepilsTemperature telepils_temperature;
+
+extern OelkastLightSimple oelkast_light_simple;
+extern OelkastLightEnveloped oelkast_light_enveloped;
+extern OelkastLightAnimationMode oelkast_light_animation_mode;
