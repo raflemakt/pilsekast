@@ -4,7 +4,7 @@
 // Denne innstillingen velger om det er AP eller node som blir programmert.
 //   Dersom IS_ACCESS_POINT er definert  ---> programmerer aksesspunkt (AP/basstromme)
 //   Dersom IS_ACCESS_POINT ikke er definert ---> programmerer node (instrument)
-//#define IS_ACCESS_POINT
+#define IS_ACCESS_POINT
 
 // Aktiver/deaktiver debug-printing til seriemonitor
 const bool DEBUG_PRINT_TO_SERIAL = true;

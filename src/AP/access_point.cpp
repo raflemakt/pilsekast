@@ -12,8 +12,8 @@
 
 // FIXME: Finnes det en bedre plass/løsning for global state/objekter?
 enum AccessPointMenuState : uint8_t {
-    TEST_STATE = 0,
-    OELKAST_LIGHT_SIMPLE_HUE_STATE = 1
+    RANDOM_COLOR_ON_HIT = 0,
+    POTMETER_DECIDE_COLOR_ON_HIT = 1
 } access_point_menu_state;
 
 
@@ -43,18 +43,35 @@ void loop()
     button_top.loop();
     uint8_t drum_reading = getDrumSensor();
     uint8_t potmeter_reading = potmeter_a.read();
-    led_a.set_color(potmeter_reading);
 
 
     // TODO: Flytt til egen fil? AccessPointTriggers.h og AccessPointMenu.h
-    if (drum_reading > 0){
-        switch (access_point_menu_state) {
-            case AccessPointMenuState::TEST_STATE: {
-                Serial.println("\n## Drum was hit while in TEST_STATE");
-            } break;
+    
+    switch (access_point_menu_state) {
+        case AccessPointMenuState::RANDOM_COLOR_ON_HIT: {
+            if (drum_reading > 0){
+                Serial.println("\n## Drum was hit while in RANDOM_COLOR_ON_HIT");
+                oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
+                oelkast_light_simple_hue.intensity = drum_reading;
+                oelkast_light_simple_hue.hue += 53;
+                led_a.set_color(oelkast_light_simple_hue.hue);
+
+
+                uint8_t temp_array[sizeof(oelkast_light_simple_hue)];     // HMMMMmmmm
+                memcpy(temp_array, &oelkast_light_simple_hue, sizeof(oelkast_light_simple_hue));
+
+                LocalNetworkInterface::send_binary_package(0, temp_array, sizeof(oelkast_light_simple_hue));
+            }
             
-            case AccessPointMenuState::OELKAST_LIGHT_SIMPLE_HUE_STATE: {
-                Serial.println("\n## Drum was hit while in OELKAST_LIGHT_SIMPLE_HUE_STATE");
+
+        } break;
+        
+        case AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT: {
+            led_a.set_color(potmeter_reading);
+
+            if (drum_reading > 0){
+                Serial.println("\n## Drum was hit while in POTMETER_DECIDE_COLOR_ON_HIT");
+
                 oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
                 oelkast_light_simple_hue.intensity = drum_reading;
                 oelkast_light_simple_hue.hue = potmeter_reading;
@@ -64,24 +81,26 @@ void loop()
                 memcpy(temp_array, &oelkast_light_simple_hue, sizeof(oelkast_light_simple_hue));
 
                 LocalNetworkInterface::send_binary_package(0, temp_array, sizeof(oelkast_light_simple_hue));
-            } break;
+            }
+        } break;
 
-            default:
+        default:
+            if (drum_reading > 0){
                 Serial.print("\n## Drum was hit in unknown 'AccessPointMenuState': ");
                 Serial.print(access_point_menu_state);
                 Serial.println();
-        }
+            }
     }
 
     if (button_top.isPressed()) {
         Serial.print("\n## Changing menu state: ");
-        if (access_point_menu_state == AccessPointMenuState::TEST_STATE) {
-            access_point_menu_state = AccessPointMenuState::OELKAST_LIGHT_SIMPLE_HUE_STATE;
-            Serial.println("OELKAST_LIGHT_SIMPLE_HUE_STATE");
+        if (access_point_menu_state == AccessPointMenuState::RANDOM_COLOR_ON_HIT) {
+            access_point_menu_state = AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT;
+            Serial.println("POTMETER_DECIDE_COLOR_ON_HIT");
         }
-        else if (access_point_menu_state == AccessPointMenuState::OELKAST_LIGHT_SIMPLE_HUE_STATE) {
-            access_point_menu_state = AccessPointMenuState::TEST_STATE;
-            Serial.println("TEST_STATE");
+        else if (access_point_menu_state == AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT) {
+            access_point_menu_state = AccessPointMenuState::RANDOM_COLOR_ON_HIT;
+            Serial.println("RANDOM_COLOR_ON_HIT");
         }
     }
 
