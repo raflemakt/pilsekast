@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Triggers
+namespace NodeTriggers
 {
 void decide_action_on_pkg_receive();
 }

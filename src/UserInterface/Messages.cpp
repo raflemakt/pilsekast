@@ -4,11 +4,11 @@
 namespace Messages
 {
 void on_boot(){
-    if (IS_ACCESS_POINT) {
-        Serial.println("\nPILSEKAST ACCESS POINT BOOT");
-    } else {
-        Serial.println("\nPILSEKAST INSTRUMENT NODE BOOT");
-    }
+    #ifdef IS_ACCESS_POINT
+    Serial.println("\nPILSEKAST ACCESS POINT BOOT");
+    #else
+    Serial.println("\nPILSEKAST INSTRUMENT NODE BOOT");
+    #endif
     Serial.print("  node name: ");
     Serial.println(NODE_NAME);
     Serial.print("  intrument type: ");

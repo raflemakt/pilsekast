@@ -6,8 +6,9 @@
 enum ProtocolDescriptor : uint8_t {
     // ØLKAST-pakketyper: Kommandoer for lys, aktuatorer e.l.
     OELKAST_LIGHT_SIMPLE = 2,
-    OELKAST_LIGHT_ENVELOPED = 3,
-    OELKAST_LIGHT_ANIMATION_MODE = 4,
+    OELKAST_LIGHT_SIMPLE_HUE = 3,
+    OELKAST_LIGHT_ENVELOPED = 4,
+    OELKAST_LIGHT_ANIMATION_MODE = 5,
     
     // TELEPILS-pakketyper: Rapportering av telemetriske data
     TELEPILS_ANNOUNCE = 64,

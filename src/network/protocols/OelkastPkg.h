@@ -11,6 +11,12 @@ struct OelkastLightSimple {
     uint8_t duration;
 };
 
+struct OelkastLightSimpleHue {
+    uint8_t packet_type;
+    uint8_t intensity;
+    uint8_t hue;
+};
+
 struct OelkastLightEnveloped {
     uint8_t packet_type;
     uint8_t intensity;

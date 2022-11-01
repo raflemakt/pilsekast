@@ -5,56 +5,85 @@
 #include "UserInterface/StringFormatters.h"
 #include "UserInterface/Messages.h"
 #include "sensors/snare_sensors.h"
+#include "network/PacketHandler.h"
+#include "network/Registers.h"
+#include "AP/HardwareInstance.h"
 
-struct TestData
-{
-    uint8_t a;
-    uint8_t b;
-    uint16_t c;
-};
-TestData test_data;
-uint8_t test_data_array[sizeof(TestData)];
+
+// FIXME: Finnes det en bedre plass/løsning for global state/objekter?
+enum AccessPointMenuState : uint8_t {
+    TEST_STATE = 0,
+    OELKAST_LIGHT_SIMPLE_HUE_STATE = 1
+} access_point_menu_state;
+
 
 namespace AccessPoint
 {
-    void on_local_data_receive()
-    {
-        Serial.println("  on_local_data_receive called");
-    }
+void on_local_data_receive()
+{
+    Serial.println("  on_local_data_receive called");
+}
 
-    void on_local_data_send()
-    {
-        Serial.println("  on_local_data_send called");
-    }
+void on_local_data_send()
+{
+    Serial.println("  on_local_data_send called");
+}
 
-    void setup()
-    {
-        pinMode(0, INPUT_PULLUP);
+void setup()
+{
+    Messages::on_boot();
+    LocalNetworkInterface::initialize();
+    LocalNetworkInterface::register_recv_callback(on_local_data_receive);
+    LocalNetworkInterface::register_send_callback(on_local_data_send);
+    Serial.println("Init complete from access_point.cpp --> starting loop.\n");
+}
 
-        Messages::on_boot();
-        LocalNetworkInterface::initialize();
-        LocalNetworkInterface::register_recv_callback(on_local_data_receive);
-        LocalNetworkInterface::register_send_callback(on_local_data_send);
-        Serial.println("Init complete from access_point.cpp --> starting loop.\n");
+void loop()
+{   
+    button_top.loop();
+    uint8_t drum_reading = getDrumSensor();
+    uint8_t potmeter_reading = potmeter_a.read();
+    led_a.set_color(potmeter_reading);
 
-        test_data.a = 0;
-        test_data.b = 123;
-        test_data.c = 45678;
-    }
 
-    void main()
-    {
-        uint8_t drum_reading = getDrumSensor();
-        test_data.b = drum_reading;
-        // if(!digitalRead(0)) {
-        if (drum_reading > 0)
-        {
-            memcpy(test_data_array, &test_data, sizeof(test_data));
-            LocalNetworkInterface::send_binary_package(0, test_data_array, sizeof(test_data));
-            test_data.a++;
+    // TODO: Flytt til egen fil? AccessPointTriggers.h og AccessPointMenu.h
+    if (drum_reading > 0){
+        switch (access_point_menu_state) {
+            case AccessPointMenuState::TEST_STATE: {
+                Serial.println("\n## Drum was hit while in TEST_STATE");
+            } break;
+            
+            case AccessPointMenuState::OELKAST_LIGHT_SIMPLE_HUE_STATE: {
+                Serial.println("\n## Drum was hit while in OELKAST_LIGHT_SIMPLE_HUE_STATE");
+                oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
+                oelkast_light_simple_hue.intensity = drum_reading;
+                oelkast_light_simple_hue.hue = potmeter_reading;
 
-            // we have button debounce at home
-            // delay(150); // <-- button debounce at home
+
+                uint8_t temp_array[sizeof(oelkast_light_simple_hue)];     // HMMMMmmmm
+                memcpy(temp_array, &oelkast_light_simple_hue, sizeof(oelkast_light_simple_hue));
+
+                LocalNetworkInterface::send_binary_package(0, temp_array, sizeof(oelkast_light_simple_hue));
+            } break;
+
+            default:
+                Serial.print("\n## Drum was hit in unknown 'AccessPointMenuState': ");
+                Serial.print(access_point_menu_state);
+                Serial.println();
         }
     }
+
+    if (button_top.isPressed()) {
+        Serial.print("\n## Changing menu state: ");
+        if (access_point_menu_state == AccessPointMenuState::TEST_STATE) {
+            access_point_menu_state = AccessPointMenuState::OELKAST_LIGHT_SIMPLE_HUE_STATE;
+            Serial.println("OELKAST_LIGHT_SIMPLE_HUE_STATE");
+        }
+        else if (access_point_menu_state == AccessPointMenuState::OELKAST_LIGHT_SIMPLE_HUE_STATE) {
+            access_point_menu_state = AccessPointMenuState::TEST_STATE;
+            Serial.println("TEST_STATE");
+        }
+    }
+
+}
 }

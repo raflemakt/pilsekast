@@ -11,5 +11,6 @@ TelepilsNodeStatus telepils_node_status = {0};
 TelepilsTemperature telepils_temperature = {0};
 
 OelkastLightSimple oelkast_light_simple = {0};
+OelkastLightSimpleHue oelkast_light_simple_hue = {0};
 OelkastLightEnveloped oelkast_light_enveloped = {0};
 OelkastLightAnimationMode oelkast_light_animation_mode = {0};

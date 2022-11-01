@@ -48,6 +48,10 @@ void move_data_to_register() {
             Serial.println("    pkg_type: OELKAST_LIGHT_SIMPLE");
             memcpy(&oelkast_light_simple, data, size);
         } break;
+        case OELKAST_LIGHT_SIMPLE_HUE: {
+            Serial.println("    pkg_type: OELKAST_LIGHT_SIMPLE_HUE");
+            memcpy(&oelkast_light_simple_hue, data, size);
+        } break;
         case OELKAST_LIGHT_ENVELOPED: {
             Serial.println("    pkg_type: OELKAST_LIGHT_ENVELOPED");
             memcpy(&oelkast_light_enveloped, data, size);

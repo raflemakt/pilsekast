@@ -2,38 +2,40 @@
 
 #include <Arduino.h>
 
-#define PWM_R_CH    4
-#define PWM_G_CH    5
-#define PWM_B_CH    6
-#define PWM_RES     8
-#define PWM_FREQ    1000
-
 
 class LedRGB
 {
 public:
-    LedRGB(uint8_t pin_r, uint8_t pin_g, uint8_t pin_b) {
+    LedRGB(uint8_t pin_r, uint8_t pin_g, uint8_t pin_b,
+           uint8_t pwm_r_channel, uint8_t pwm_g_channel, uint8_t pwm_b_channel,
+           uint8_t pwm_resolution, uint16_t pwm_frequency) {
+
         this->m_pin_r = pin_r;
         this->m_pin_g = pin_g;
         this->m_pin_b = pin_b;
+        this->m_pwm_r_channel = pwm_r_channel;
+        this->m_pwm_g_channel = pwm_g_channel;
+        this->m_pwm_b_channel = pwm_b_channel;
+        this->m_pwm_resolution = pwm_resolution;
+        this->m_pwm_frequency = pwm_frequency;
 
-        ledcSetup(PWM_R_CH, PWM_FREQ, PWM_RES);
-        ledcSetup(PWM_G_CH, PWM_FREQ, PWM_RES);
-        ledcSetup(PWM_B_CH, PWM_FREQ, PWM_RES);
-        ledcAttachPin(pin_r, PWM_R_CH);
-        ledcAttachPin(pin_g, PWM_G_CH);
-        ledcAttachPin(pin_b, PWM_B_CH);
+        ledcSetup(pwm_r_channel, pwm_frequency, pwm_resolution);
+        ledcSetup(pwm_g_channel, pwm_frequency, pwm_resolution);
+        ledcSetup(pwm_b_channel, pwm_frequency, pwm_resolution);
+        ledcAttachPin(pin_r, pwm_r_channel);
+        ledcAttachPin(pin_g, pwm_g_channel);
+        ledcAttachPin(pin_b, pwm_b_channel);
         
     }
 
-    void set_colors(uint8_t r, uint8_t g, uint8_t b) {
+    void set_color(uint8_t r, uint8_t g, uint8_t b) {
         m_value_r = r;
         m_value_g = g;
         m_value_b = b;
         update_led();
     }
 
-    void set_colors(uint8_t hue) {
+    void set_color(uint8_t hue) {
         hue_to_rgb(hue);
         update_led();
     }
@@ -43,26 +45,23 @@ private:
     uint8_t m_pin_g;
     uint8_t m_pin_b;
 
+    uint8_t m_pwm_r_channel;
+    uint8_t m_pwm_g_channel;
+    uint8_t m_pwm_b_channel;
+    uint8_t m_pwm_resolution;
+    uint16_t m_pwm_frequency;
+
     uint8_t m_value_r;
     uint8_t m_value_g;
     uint8_t m_value_b;
 
     void update_led() {
-        Serial.print("  writing to LED, RGB: ");
-        Serial.print(m_value_r);
-        Serial.print(" ");
-        Serial.print(m_value_g);
-        Serial.print(" ");
-        Serial.println(m_value_b);
-
-        ledcWrite(PWM_R_CH, m_value_r);
-        ledcWrite(PWM_G_CH, m_value_g);
-        ledcWrite(PWM_B_CH, m_value_b);
+        ledcWrite(m_pwm_r_channel, m_value_r);
+        ledcWrite(m_pwm_g_channel, m_value_g);
+        ledcWrite(m_pwm_b_channel, m_value_b);
     }
 
     void hue_to_rgb(uint8_t hue) {
-        Serial.print("hue: ");
-        Serial.print(hue);
         if (hue <= 85) {
             m_value_r = (85 - hue) * 3;
             m_value_g = hue * 3;
@@ -79,5 +78,4 @@ private:
             m_value_b = (255 - hue) * 3;
         }
     }
-    
 };

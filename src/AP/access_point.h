@@ -3,5 +3,5 @@
 namespace AccessPoint
 {
 void setup();
-void main();
+void loop();
 }
