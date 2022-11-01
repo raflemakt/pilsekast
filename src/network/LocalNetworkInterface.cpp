@@ -92,7 +92,9 @@ void initialize(){
     Serial.print("  init result: ");
     Serial.println(esp_err_to_name(esp_now_status::init));
 
-    if (!IS_ACCESS_POINT) add_address_to_peers(AP_MAC_ADDRESS);
+    #ifndef IS_ACCESS_POINT
+    add_address_to_peers(AP_MAC_ADDRESS);
+    #endif
 
     esp_now_status::register_recv_callback = esp_now_register_recv_cb(esp_now_on_data_receive);
     esp_now_status::register_send_callback = esp_now_register_send_cb(esp_now_on_data_sent);

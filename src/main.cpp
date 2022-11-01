@@ -9,11 +9,17 @@
 void setup(){
   if (DEBUG_PRINT_TO_SERIAL) Serial.begin(SERIAL_BAUD_RATE);
 
-  if (IS_ACCESS_POINT) AccessPoint::setup();
-  if (!IS_ACCESS_POINT) Node::setup();
+  #ifdef IS_ACCESS_POINT
+  AccessPoint::setup();
+  #else
+  Node::setup();
+  #endif
 }
 
 void loop(){
-  if (IS_ACCESS_POINT) AccessPoint::main();
-  if (!IS_ACCESS_POINT) Node::main();
+  #ifdef IS_ACCESS_POINT
+  AccessPoint::loop();
+  #else
+  Node::loop();
+  #endif
 }
