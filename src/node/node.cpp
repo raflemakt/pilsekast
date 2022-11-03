@@ -4,7 +4,7 @@
 #include "LedStrip/LedStripCustom.h"
 #include "UserInterface/Messages.h"
 #include "node/NodeTriggers.h"
-//#include "node/HardwareInstance.h"
+#include "node/HardwareInstance.h"
 
 
 namespace Node
