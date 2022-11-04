@@ -18,7 +18,7 @@ enum ProtocolDescriptor : uint8_t {
 
 namespace PacketHandler
 {
-void move_data_to_buffer(const uint8_t *data, const uint8_t size);
+void move_data_to_buffer(const uint8_t data[], const uint8_t size);
 void move_data_to_register();
 }
 

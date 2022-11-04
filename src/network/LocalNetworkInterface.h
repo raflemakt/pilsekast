@@ -2,20 +2,45 @@
 
 #include "../configuration.h"
 
+#include "network/LocalNetworkInterface.h"
+#include "network/PacketHandler.h"
+#include "UserInterface/StringFormatters.h"
+
+#define BROADCAST 0
 
 namespace LocalNetworkInterface
 {
-void initialize();
-
-// FIXME: Om en eller begge callback-funksjonene ikke er registrert vil de peke
-//        på og til slutt eksekvere tilfeldige minneadresser, noe som fører til at
-//        ESP'en kræsjer. Finn på et bedre system for dette.
+typedef uint8_t MacAddress[6];
 typedef void(*UserCallbackFunction)();
+
+void initialize();
 void register_recv_callback(UserCallbackFunction callback_function);
 void register_send_callback(UserCallbackFunction callback_function);
-
 void send_binary_package(const uint8_t *peer_addr, const uint8_t *data, size_t len);
+void send_buffer(MacAddress destination_address);
 
 extern uint8_t transmission_buffer[TRANSMISSION_BUFFER_SIZE];
 extern uint8_t transmission_size;
+extern MacAddress my_mac_address;
+
+template<typename T>
+void send(T* package, MacAddress destination_address) {
+    Serial.println("\n## User called the 'send<pkg_type>' function");
+    transmission_size = sizeof(T);
+
+    if (transmission_size > TRANSMISSION_BUFFER_SIZE) Serial.println("  data too large for buffer, discarding");
+
+    memcpy(&transmission_buffer, package, transmission_size);
+
+    Serial.println("  overwriting transmission buffer");
+    Serial.print("    bytes: ");
+    Serial.println(transmission_size);
+
+    Serial.print("    transmission buffer (dec): ");
+    Serial.println(Format::array_as_decimal(transmission_buffer, transmission_size));
+
+    Serial.print("    transmission buffer (hex): ");
+    Serial.println(Format::array_as_hex(transmission_buffer, transmission_size));
+    send_buffer(destination_address);
+}
 }

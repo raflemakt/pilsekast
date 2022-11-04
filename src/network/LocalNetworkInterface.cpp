@@ -1,9 +1,10 @@
+#include <Arduino.h>
 #include <esp_now.h>
 #include <WiFi.h>
 
-#include "LocalNetworkInterface.h"
-#include "UserInterface/StringFormatters.h"
+#include "network/LocalNetworkInterface.h"
 #include "network/PacketHandler.h"
+#include "UserInterface/StringFormatters.h"
 
 
 namespace esp_now_status {
@@ -18,8 +19,9 @@ esp_now_peer_info_t peer_buffer = {};
 esp_now_peer_num_t peer_num;
 
 
-LocalNetworkInterface::UserCallbackFunction user_configured_recv_cb;
-LocalNetworkInterface::UserCallbackFunction user_configured_send_cb;
+LocalNetworkInterface::MacAddress my_mac_address = {0};
+LocalNetworkInterface::UserCallbackFunction user_configured_recv_cb = nullptr;
+LocalNetworkInterface::UserCallbackFunction user_configured_send_cb = nullptr;
 
 uint8_t LocalNetworkInterface::transmission_buffer[TRANSMISSION_BUFFER_SIZE] = {0};
 uint8_t LocalNetworkInterface::transmission_size;
@@ -78,6 +80,8 @@ void esp_now_on_data_receive(const uint8_t *mac_addr, const uint8_t *incoming_da
 namespace LocalNetworkInterface
 {
 void initialize(){
+    //my_mac_address = WiFi.macAddress();  //FIXME: feil datatype, String --> unsigned char [6]. Bruke union?
+    
     Serial.println("WiFi mode WIFI_STA");
     Serial.print("  my MAC: ");
     Serial.println(WiFi.macAddress());
@@ -128,4 +132,15 @@ void send_binary_package(const uint8_t *peer_addr, const uint8_t *data, size_t l
     Serial.print("  esp_now_send result: ");
     Serial.println(esp_err_to_name(result));
 }
+
+void send_buffer(MacAddress destination_address) {
+    Serial.print("  destination: ");
+    Serial.println(Format::mac_addr_from_array(destination_address));
+
+    esp_err_t result = esp_now_send(destination_address, transmission_buffer, transmission_size);
+
+    Serial.print("  esp_now_send result: ");
+    Serial.println(esp_err_to_name(result));
+}
+
 }

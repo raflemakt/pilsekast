@@ -5,6 +5,7 @@
 #include "UserInterface/Messages.h"
 #include "node/NodeTriggers.h"
 #include "node/HardwareInstance.h"
+#include "network/Registers.h"
 
 
 namespace Node
@@ -26,8 +27,11 @@ void setup() {
     LocalNetworkInterface::register_send_callback(on_local_data_send);
 
     Serial.println("Sending announcement package to AP");
-    uint8_t test_data = 32;
-    LocalNetworkInterface::send_binary_package(AP_MAC_ADDRESS, &test_data, 1);
+    telepils_announce.pkg_header = ProtocolDescriptor::TELEPILS_ANNOUNCE;
+    //telepils_announce.node_mac_address = LocalNetworkInterface::my_mac_address; // FIXME: Feil datatype
+    memcpy(telepils_announce.node_name, &NODE_NAME, sizeof(NODE_NAME));
+    memcpy(telepils_announce.instrument_type, &INSTRUMENT_TYPE, sizeof(INSTRUMENT_TYPE));
+    LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
 
     LedStripCustom_setup();
 }

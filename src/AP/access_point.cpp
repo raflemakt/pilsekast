@@ -8,6 +8,7 @@
 #include "network/PacketHandler.h"
 #include "network/Registers.h"
 #include "AP/HardwareInstance.h"
+#include "AP/AccessPointTriggers.h"
 
 
 // FIXME: Finnes det en bedre plass/løsning for global state/objekter?
@@ -22,6 +23,7 @@ namespace AccessPoint
 void on_local_data_receive()
 {
     Serial.println("  on_local_data_receive called");
+    AccessPointTriggers::decide_action_on_pkg_receive();
 }
 
 void on_local_data_send()
@@ -56,11 +58,7 @@ void loop()
                 oelkast_light_simple_hue.hue += 53;
                 led_a.set_color(oelkast_light_simple_hue.hue);
 
-
-                uint8_t temp_array[sizeof(oelkast_light_simple_hue)];     // HMMMMmmmm
-                memcpy(temp_array, &oelkast_light_simple_hue, sizeof(oelkast_light_simple_hue));
-
-                LocalNetworkInterface::send_binary_package(0, temp_array, sizeof(oelkast_light_simple_hue));
+                LocalNetworkInterface::send<OelkastLightSimpleHue>(&oelkast_light_simple_hue, BROADCAST);
             }
             
 
@@ -76,11 +74,7 @@ void loop()
                 oelkast_light_simple_hue.intensity = drum_reading;
                 oelkast_light_simple_hue.hue = potmeter_reading;
 
-
-                uint8_t temp_array[sizeof(oelkast_light_simple_hue)];     // HMMMMmmmm
-                memcpy(temp_array, &oelkast_light_simple_hue, sizeof(oelkast_light_simple_hue));
-
-                LocalNetworkInterface::send_binary_package(0, temp_array, sizeof(oelkast_light_simple_hue));
+                LocalNetworkInterface::send<OelkastLightSimpleHue>(&oelkast_light_simple_hue, BROADCAST);
             }
         } break;
 
