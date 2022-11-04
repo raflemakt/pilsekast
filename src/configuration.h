@@ -4,8 +4,7 @@
 // Denne innstillingen velger om det er AP eller node som blir programmert.
 //   Dersom IS_ACCESS_POINT er definert  ---> programmerer aksesspunkt (AP/basstromme)
 //   Dersom IS_ACCESS_POINT ikke er definert ---> programmerer node (instrument)
-//#define IS_ACCESS_POINT
-#define HAS_SOUND_SENSOR
+#define IS_ACCESS_POINT
 
 // Aktiver/deaktiver debug-printing til seriemonitor
 const bool DEBUG_PRINT_TO_SERIAL = true;
@@ -25,3 +24,6 @@ const uint8_t LOCAL_NETWORK_CHANNEL = 0;
 const String NODE_NAME = "Tore Trombone";
 const String INSTRUMENT_TYPE = "trekkbasun";
 
+// Ekstrautstyr, kommenter ut dersom de ikke er tilkobla
+#define HAS_SOUND_SENSOR
+//#define HAS_TTGO_SCREEN
