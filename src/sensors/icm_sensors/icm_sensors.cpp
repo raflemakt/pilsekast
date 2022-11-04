@@ -52,8 +52,9 @@ void printAccVerdi(ICM_20948_I2C *sensor)
     Serial.println("Toggle lys"); //Print kan erstattes med lysdiode
     lastTime = millis();
 }
+}
 
-void ICMloop() {
+void ICMloop(){
   if (myICM.dataReady())
   {
     myICM.getAGMT();
