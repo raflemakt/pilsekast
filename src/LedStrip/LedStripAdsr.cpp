@@ -11,7 +11,7 @@ byte expression;
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> stripAdsr(PixelCount, PixelPin);
 NeoPixelAnimator animationsAdsr(AnimationChannels); // NeoPixel animation management object
 
-struct MyAnimationState
+struct MyAnimationStateAdsr
 {
     RgbColor StartingColor;
     RgbColor EndingColor;
@@ -24,7 +24,7 @@ uint8_t u(uint8_t t, uint8_t x)
     return (t >= x);
 }
 
-MyAnimationState animationState[AnimationChannels];
+MyAnimationStateAdsr animationStateAdsr[AnimationChannels];
 
 void AnimationUpdateLinear(const AnimationParam &param)
 {
@@ -33,8 +33,8 @@ void AnimationUpdateLinear(const AnimationParam &param)
     // we use the blend function on the RgbColor to mix
     // color based on the progress given to us in the animation
     RgbColor updatedColor = RgbColor::LinearBlend(
-        animationState[param.index].StartingColor,
-        animationState[param.index].EndingColor,
+        animationStateAdsr[param.index].StartingColor,
+        animationStateAdsr[param.index].EndingColor,
         param.progress);
 
     // apply the color to the strip
@@ -52,10 +52,10 @@ void AnimationUpdateUnlinear(const AnimationParam &param)
     // color based on the progress given to us in the animation
     float progress_y = -pow(param.progress, 3) + 1.89 * param.progress;
     RgbColor updatedColor = RgbColor::BilinearBlend(
-        animationState[param.index].StartingColor,
-        animationState[param.index].ToneColor,
-        animationState[param.index].TwoColor,
-        animationState[param.index].EndingColor,
+        animationStateAdsr[param.index].StartingColor,
+        animationStateAdsr[param.index].ToneColor,
+        animationStateAdsr[param.index].TwoColor,
+        animationStateAdsr[param.index].EndingColor,
         param.progress, progress_y);
 
     // apply the color to the strip
@@ -70,8 +70,8 @@ void TurnOnStripAttack(float intensity, float longevity)
     RgbColor target = HslColor(120 / 360.0f, 1.0f, intensity);
     uint16_t time = longevity;
 
-    animationState[0].StartingColor = stripAdsr.GetPixelColor(0);
-    animationState[0].EndingColor = target;
+    animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
+    animationStateAdsr[0].EndingColor = target;
 
     animationsAdsr.StartAnimation(0, time, AnimationUpdateLinear);
     stripAdsr.Show();
@@ -87,10 +87,10 @@ void TurnOnStripDuration(float longevity, float level, float intensity)
     RgbColor target_3 = HslColor(120 / 360.0f, 1.0f, level);
     uint16_t time = longevity;
 
-    animationState[0].StartingColor = stripAdsr.GetPixelColor(0);
-    animationState[0].ToneColor = target_1;
-    animationState[0].TwoColor = target_2;
-    animationState[0].EndingColor = target_3;
+    animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
+    animationStateAdsr[0].ToneColor = target_1;
+    animationStateAdsr[0].TwoColor = target_2;
+    animationStateAdsr[0].EndingColor = target_3;
 
     animationsAdsr.StartAnimation(0, time, AnimationUpdateUnlinear);
     stripAdsr.Show();
@@ -100,8 +100,8 @@ void TurnOnStripSubstain(float level, float duration, float longevityAttack, flo
 {
     uint16_t time = duration - longevityAttack - longevityDuration;
 
-    animationState[0].StartingColor = stripAdsr.GetPixelColor(0);
-    animationState[0].EndingColor = stripAdsr.GetPixelColor(0);
+    animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
+    animationStateAdsr[0].EndingColor = stripAdsr.GetPixelColor(0);
 
     animationsAdsr.StartAnimation(0, time, AnimationUpdateLinear);
     stripAdsr.Show();
@@ -114,10 +114,10 @@ void TurnOnStripRelease(float luminance, float longevity)
     RgbColor target_3 = RgbColor(0);
     uint16_t time = longevity;
 
-    animationState[0].StartingColor = stripAdsr.GetPixelColor(0);
-    animationState[0].ToneColor = target_1;
-    animationState[0].TwoColor = target_2;
-    animationState[0].EndingColor = target_3;
+    animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
+    animationStateAdsr[0].ToneColor = target_1;
+    animationStateAdsr[0].TwoColor = target_2;
+    animationStateAdsr[0].EndingColor = target_3;
 
     animationsAdsr.StartAnimation(0, time, AnimationUpdateUnlinear);
     stripAdsr.Show();

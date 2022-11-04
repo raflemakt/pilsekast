@@ -51,6 +51,7 @@ void printAccVerdi(ICM_20948_I2C *sensor)
   if (accVerdi > 2 && millis()-lastTime > 1000) { //Minst 1000 ms mellom hver toggle
     Serial.println("Toggle lys"); //Print kan erstattes med lysdiode
     lastTime = millis();
+  }
 }
 
 void ICMloop() {
