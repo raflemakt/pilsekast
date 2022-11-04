@@ -19,11 +19,6 @@ struct MyAnimationStateAdsr
     RgbColor TwoColor;
 };
 
-uint8_t u(uint8_t t, uint8_t x)
-{
-    return (t >= x);
-}
-
 MyAnimationStateAdsr animationStateAdsr[AnimationChannels];
 
 void AnimationUpdateLinear(const AnimationParam &param)
@@ -65,10 +60,10 @@ void AnimationUpdateUnlinear(const AnimationParam &param)
     }
 }
 
-void TurnOnStripAttack(float intensity, float longevity)
+void TurnOnStripAttack(float intensity, float time_attack)
 {
     RgbColor target = HslColor(120 / 360.0f, 1.0f, intensity);
-    uint16_t time = longevity;
+    uint16_t time = time_attack;
 
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
     animationStateAdsr[0].EndingColor = target;
@@ -78,14 +73,14 @@ void TurnOnStripAttack(float intensity, float longevity)
     expression = 1;
 }
 
-void TurnOnStripDuration(float longevity, float level, float intensity)
+void TurnOnStripDuration(float time_duration, float level, float intensity)
 {
     float luminance_target1 = (intensity - level) * 0.7;
     float luminance_target2 = (intensity - level) * 0.3;
     RgbColor target_1 = HslColor(120 / 360.0f, 1.0f, luminance_target1);
     RgbColor target_2 = HslColor(120 / 360.0f, 1.0f, luminance_target2);
     RgbColor target_3 = HslColor(120 / 360.0f, 1.0f, level);
-    uint16_t time = longevity;
+    uint16_t time = time_duration;
 
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
     animationStateAdsr[0].ToneColor = target_1;
@@ -96,9 +91,9 @@ void TurnOnStripDuration(float longevity, float level, float intensity)
     stripAdsr.Show();
 }
 
-void TurnOnStripSubstain(float level, float duration, float longevityAttack, float longevityDuration)
+void TurnOnStripSubstain(float level, float duration, float time_attack, float time_duration)
 {
-    uint16_t time = duration - longevityAttack - longevityDuration;
+    uint16_t time = duration - time_attack - time_duration;
 
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
     animationStateAdsr[0].EndingColor = stripAdsr.GetPixelColor(0);
@@ -107,12 +102,12 @@ void TurnOnStripSubstain(float level, float duration, float longevityAttack, flo
     stripAdsr.Show();
 }
 
-void TurnOnStripRelease(float luminance, float longevity)
+void TurnOnStripRelease(float level, float time_release)
 {
-    RgbColor target_1 = HslColor(120 / 360.0f, 1.0f, luminance * 0.3);
-    RgbColor target_2 = HslColor(120 / 360.0f, 1.0f, luminance * 0.1);
+    RgbColor target_1 = HslColor(120 / 360.0f, 1.0f, level * 0.7);
+    RgbColor target_2 = HslColor(120 / 360.0f, 1.0f, level * 0.3);
     RgbColor target_3 = RgbColor(0);
-    uint16_t time = longevity;
+    uint16_t time = time_release;
 
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
     animationStateAdsr[0].ToneColor = target_1;
@@ -123,7 +118,17 @@ void TurnOnStripRelease(float luminance, float longevity)
     stripAdsr.Show();
 }
 
-void LedStripAdsrUpdate(float light, float time)
+void TurnOffMasterStripAdsr()
+{
+    for (byte Led = 0; Led <= PixelCount; Led++)
+    {
+        RgbColor black(0);
+        stripAdsr.SetPixelColor(Led, black);
+    }
+    stripAdsr.Show();
+}
+
+void LedStripAdsrUpdate(float intensity, float time_attack, float time_duration, float level, float time_release, float duration)
 {
     // the normal loop just needs these two to run the active animations
     if (animationsAdsr.IsAnimating())
@@ -137,17 +142,21 @@ void LedStripAdsrUpdate(float light, float time)
         switch (expression)
         {
         case 1:
-            TurnOnStripDuration(5, 0.25, 0.5);
+            TurnOnStripDuration(time_duration, level, intensity);
             expression = 2;
             break;
 
         case 2:
-            TurnOnStripSubstain(0.25, 15, 5, 5);
+            TurnOnStripSubstain(level, duration, time_attack, time_duration);
             expression = 3;
             break;
 
         case 3:
-            TurnOnStripRelease(0.25, 5);
+            TurnOnStripRelease(level, time_release);
+            expression = 4;
+            break;
+        case 4:
+            TurnOffMasterStripAdsr();
             expression = 0;
             break;
         }
