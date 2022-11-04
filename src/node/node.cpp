@@ -6,6 +6,7 @@
 #include "node/NodeTriggers.h"
 #include "node/HardwareInstance.h"
 #include "network/Registers.h"
+#include "sensors/icm_sensors/icm_sensors.h"
 
 
 namespace Node
@@ -34,9 +35,11 @@ void setup() {
     LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
 
     LedStripCustom_setup();
+    ICMsetup();
 }
 
 void loop() {
     //LedStripCustomUpdate(0.25,90);
+    ICMloop();
 }
 }
