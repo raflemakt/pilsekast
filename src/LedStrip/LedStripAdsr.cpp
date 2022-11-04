@@ -73,14 +73,14 @@ void TurnOnStripAttack(float intensity, float time_attack)
     expression = 1;
 }
 
-void TurnOnStripDuration(float time_duration, float level, float intensity)
+void TurnOnStripdecay(float time_decay, float level, float intensity)
 {
     float luminance_target1 = (intensity - level) * 0.7;
     float luminance_target2 = (intensity - level) * 0.3;
     RgbColor target_1 = HslColor(120 / 360.0f, 1.0f, luminance_target1);
     RgbColor target_2 = HslColor(120 / 360.0f, 1.0f, luminance_target2);
     RgbColor target_3 = HslColor(120 / 360.0f, 1.0f, level);
-    uint16_t time = time_duration;
+    uint16_t time = time_decay;
 
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
     animationStateAdsr[0].ToneColor = target_1;
@@ -91,9 +91,9 @@ void TurnOnStripDuration(float time_duration, float level, float intensity)
     stripAdsr.Show();
 }
 
-void TurnOnStripSubstain(float level, float duration, float time_attack, float time_duration)
+void TurnOnStripSubstain(float level, float duration, float time_attack, float time_decay)
 {
-    uint16_t time = duration - time_attack - time_duration;
+    uint16_t time = duration - time_attack - time_decay;
 
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
     animationStateAdsr[0].EndingColor = stripAdsr.GetPixelColor(0);
@@ -128,7 +128,7 @@ void TurnOffMasterStripAdsr()
     stripAdsr.Show();
 }
 
-void LedStripAdsrUpdate(float intensity, float time_attack, float time_duration, float level, float time_release, float duration)
+void LedStripAdsrUpdate(float intensity, float time_attack, float time_decay, float level, float time_release, float duration)
 {
     // the normal loop just needs these two to run the active animations
     if (animationsAdsr.IsAnimating())
@@ -142,12 +142,12 @@ void LedStripAdsrUpdate(float intensity, float time_attack, float time_duration,
         switch (expression)
         {
         case 1:
-            TurnOnStripDuration(time_duration, level, intensity);
+            TurnOnStripdecay(time_decay, level, intensity);
             expression = 2;
             break;
 
         case 2:
-            TurnOnStripSubstain(level, duration, time_attack, time_duration);
+            TurnOnStripSubstain(level, duration, time_attack, time_decay);
             expression = 3;
             break;
 
