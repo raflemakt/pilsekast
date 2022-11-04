@@ -23,7 +23,6 @@ Created by: Jose Garcia @jotathebest at github: https://github.com/jotathebest
 #define UbidotsESP32MQTT_H
 #include <PubSubClient.h>
 #include <WiFi.h>
-
 #include "UbiConstants.h"
 #include "UbiTypes.h"
 

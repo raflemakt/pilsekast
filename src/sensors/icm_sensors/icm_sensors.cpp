@@ -1,6 +1,7 @@
 #include "ICM_20948.h"
 #define WIRE_PORT Wire
 #define AD0_VAL 1
+unsigned long lastTime = 0;
 
 ICM_20948_I2C myICM;
 
@@ -47,11 +48,12 @@ void printAccVerdi(ICM_20948_I2C *sensor)
     Serial.print(float(0));
   }
   Serial.println(" m/s^2");
+  if (accVerdi > 2 && millis()-lastTime > 1000) { //Minst 1000 ms mellom hver toggle
+    Serial.println("Toggle lys"); //Print kan erstattes med lysdiode
+    lastTime = millis();
 }
 
-void ICMloop()
-{
-
+void ICMloop() {
   if (myICM.dataReady())
   {
     myICM.getAGMT();
