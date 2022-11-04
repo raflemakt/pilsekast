@@ -5,6 +5,7 @@
 //   Dersom IS_ACCESS_POINT er definert  ---> programmerer aksesspunkt (AP/basstromme)
 //   Dersom IS_ACCESS_POINT ikke er definert ---> programmerer node (instrument)
 #define IS_ACCESS_POINT
+#define HAS_SOUND_SENSOR
 
 // Aktiver/deaktiver debug-printing til seriemonitor
 const bool DEBUG_PRINT_TO_SERIAL = true;

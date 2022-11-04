@@ -12,7 +12,8 @@ byte ColorG;
 byte ColorB;
 float Intensity;
 float duration;
-bool animationMode = false;
+byte userChosenOption; // 1 is
+byte animationMode;
 int EnvAttack;
 int EnvDecay;
 int EnvSustain;
@@ -276,7 +277,7 @@ void SetupAnimations()
     animations3.StartAnimation(1, 2000, MoveAnimUpdate);
 }
 
-void UserChosenOption()
+void ReadUserChosenOption()
 {
 }
 
