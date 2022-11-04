@@ -1,4 +1,4 @@
-#include "ICM_20948.h"
+#include "icm_sensors.h"
 #define WIRE_PORT Wire
 #define AD0_VAL 1
 unsigned long lastTime = 0;
@@ -41,18 +41,17 @@ void printAccVerdi(ICM_20948_I2C *sensor)
   float accVerdi = absValuePrint(9.81 / 1000 * (sensor->gyrX()), 9.81 / 1000 * (sensor->gyrY()), 9.81 / 1000 * (sensor->gyrZ()));
   if (accVerdi > 0.1) //Filtrerer bort lave målinger til 0
   {
-    Serial.print(accVerdi);
+    //Serial.print(accVerdi);
 
   }
   else {
-    Serial.print(float(0));
+    //Serial.print(float(0));
   }
-  Serial.println(" m/s^2");
+  //Serial.println(" m/s^2");
   if (accVerdi > 2 && millis()-lastTime > 1000) { //Minst 1000 ms mellom hver toggle
     Serial.println("Toggle lys"); //Print kan erstattes med lysdiode
     lastTime = millis();
   }
-}
 }
 
 void ICMloop(){
@@ -60,11 +59,9 @@ void ICMloop(){
   {
     myICM.getAGMT();
     printAccVerdi(&myICM);
-    delay(100);
   }
   else
   {
     Serial.println("Waiting for data");
-    delay(100);
   }
 }
