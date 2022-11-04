@@ -1,4 +1,6 @@
 #pragma once
+#include "network/protocols/TelepilsPkg.h"
+#include "network/protocols/OelkastPkg.h"
 
 
 extern TelepilsAnnounce telepils_announce;
