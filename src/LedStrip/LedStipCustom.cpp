@@ -3,12 +3,10 @@
 #include <NeoPixelAnimator.h>
 #include "LedStripCustom.h"
 
-const uint16_t PixelCount = 22;          // make sure to set this to the number of pixels in your strip
-const uint16_t PixelPin = 4;             // make sure to set this to the correct pin, ignored for Esp8266
-const uint8_t AnimationChannels = 1;     // we only need one as all the pixels are animated at once
-unsigned long startingMillis = millis(); // some global variables available anywhere in the program
-float intensity = 0.25;
-int flag1=1;
+const uint16_t PixelCount = 22;      // make sure to set this to the number of pixels in your strip
+const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
+const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
+int flag1 = 1;
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip1(PixelCount, PixelPin);
 NeoPixelAnimator animations(AnimationChannels); // NeoPixel animation management object
@@ -39,8 +37,6 @@ void BlendAnimationUpdate(const AnimationParam &param)
     }
 }
 
-
-
 void TurnOnStrip(float luminance, float longevity)
 {
     RgbColor target = HslColor(120 / 360.0f, 1.0f, luminance);
@@ -51,7 +47,7 @@ void TurnOnStrip(float luminance, float longevity)
 
     animations.StartAnimation(0, time, BlendAnimationUpdate);
     strip1.Show();
-    flag1=1;
+    flag1 = 1;
 }
 
 void TurnOffStrip(float luminance, float longevity)
@@ -64,7 +60,7 @@ void TurnOffStrip(float luminance, float longevity)
 
     animations.StartAnimation(0, time, BlendAnimationUpdate);
     strip1.Show();
-    flag1=0;
+    flag1 = 0;
 }
 
 void TurnOffMasterStrip()
@@ -84,27 +80,26 @@ void LedStripCustom_setup()
     TurnOffMasterStrip();
 }
 
-void LedStripCustomUpdate(float light,float time)
+void LedStripCustomUpdate(float light, float time)
 {
     // the normal loop just needs these two to run the active animations
     if (animations.IsAnimating())
     {
-    animations.UpdateAnimations();
-    strip1.Show();
+        animations.UpdateAnimations();
+        strip1.Show();
     }
 
     else
     {
-    if(flag1 == 1)
-    {
-    TurnOffStrip(light,time);
-    }
+        if (flag1 == 1)
+        {
+            TurnOffStrip(light, time);
+        }
     }
 }
 
 void LedStripCustom_loop()
 {
-    
-LedStripCustomUpdate(0.25,500);
 
+    LedStripCustomUpdate(0.25, 500);
 }
