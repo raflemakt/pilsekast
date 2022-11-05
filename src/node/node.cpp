@@ -37,11 +37,13 @@ namespace Node
         LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
 
     LedStripCustom_setup();
-    ICMsetup();
+    
+    //ICMsetup();  // Denne kræsjer med melding: [Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+    //                Initialization of the sensor returned: Data Underflow
 }
 
 void loop() {
     //LedStripCustomUpdate(0.25,90);
-    ICMloop();
+    //ICMloop();
 }
 }
