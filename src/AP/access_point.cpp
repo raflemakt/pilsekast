@@ -10,6 +10,10 @@
 #include "AP/HardwareInstance.h"
 #include "AP/AccessPointTriggers.h"
 
+#ifdef HAS_TTGO_SCREEN
+#include "UserInterface/TTGO_screen/TTGO_Screen.h"
+#endif
+
 
 // FIXME: Finnes det en bedre plass/løsning for global state/objekter?
 enum AccessPointMenuState : uint8_t {
@@ -33,6 +37,11 @@ void on_local_data_send()
 
 void setup()
 {
+    #ifdef HAS_TTGO_SCREEN
+    Screen::init();
+    Screen::display_test_screen();
+    #endif
+
     Messages::on_boot();
     LocalNetworkInterface::initialize();
     LocalNetworkInterface::register_recv_callback(on_local_data_receive);

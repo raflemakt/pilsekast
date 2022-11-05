@@ -1,5 +1,4 @@
-#include "network/protocols/TelepilsPkg.h"
-#include "network/protocols/OelkastPkg.h"
+#include "Registers.h"
 
 
 // TODO: I stedet for å instansiere alle disse structene der de fleste vil

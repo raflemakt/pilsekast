@@ -24,3 +24,6 @@ const uint8_t LOCAL_NETWORK_CHANNEL = 0;
 const String NODE_NAME = "Tore Trombone";
 const String INSTRUMENT_TYPE = "trekkbasun";
 
+// Ekstrautstyr, kommenter ut dersom de ikke er tilkobla
+#define HAS_SOUND_SENSOR
+//#define HAS_TTGO_SCREEN
