@@ -36,17 +36,6 @@ namespace Node
         memcpy(telepils_announce.instrument_type, &INSTRUMENT_TYPE, sizeof(INSTRUMENT_TYPE));
         LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
 
-<<<<<<< HEAD
-        LedStripCustom_setup();
-    }
-
-    void loop()
-    {
-        // uint8_t noiseLevel = mySound.getNoise();
-        //  Serial.println(noiseLevel);
-        //  LedStripCustomUpdate(0.25,90);
-    }
-=======
     LedStripCustom_setup();
     ICMsetup();
 }
@@ -55,5 +44,4 @@ void loop() {
     //LedStripCustomUpdate(0.25,90);
     ICMloop();
 }
->>>>>>> ccb8466e6d28baa88109f14fd6f4ac7c60ce3ec3
 }
