@@ -2,6 +2,7 @@
 #include "NeoPixelBus.h"
 #include <NeoPixelAnimator.h>
 #include "LedStripCustom.h"
+#include "lightController.h"
 
 const uint16_t PixelCount = 22;      // make sure to set this to the number of pixels in your strip
 const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
@@ -39,7 +40,7 @@ void BlendAnimationUpdate(const AnimationParam &param)
 
 void TurnOnStrip(float luminance, float longevity)
 {
-    RgbColor target = HslColor(120 / 360.0f, 1.0f, luminance);
+    RgbColor target = HslColor(120/360.0f, 1.0f, luminance);
     uint16_t time = longevity;
 
     animationState[0].StartingColor = strip1.GetPixelColor(0);
@@ -48,6 +49,7 @@ void TurnOnStrip(float luminance, float longevity)
     animations.StartAnimation(0, time, BlendAnimationUpdate);
     strip1.Show();
     flag1 = 1;
+    Chosen_Option = 2;
 }
 
 void TurnOffStrip(float luminance, float longevity)
@@ -91,6 +93,7 @@ void LedStripCustomUpdate(float light, float time)
 
     else
     {
+
         if (flag1 == 1)
         {
             TurnOffStrip(light, time);

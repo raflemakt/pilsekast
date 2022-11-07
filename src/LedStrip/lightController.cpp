@@ -6,36 +6,23 @@
 #include "LedStripCustom.h"
 #include "LedStripAdsr.h"
 
-// ADSR
-uint8_t Red = oelkast_light_enveloped.color_red;
-uint8_t Green = oelkast_light_enveloped.color_green;
-uint8_t Blue = oelkast_light_enveloped.color_blue;
-RgbColor color = RgbColor(Red, Green, Blue);
-HslColor Actual_color = HslColor(color);
-float time_attack = oelkast_light_enveloped.env_attack_time;
-float time_duration = oelkast_light_enveloped.env_decay_time;
-float time_release = oelkast_light_enveloped.env_release_time;
-float duration_adsr = oelkast_light_enveloped.duration * 100;
-float intensity_adsr = oelkast_light_enveloped.intensity * 0.01;
-float level = oelkast_light_enveloped.env_sustain_level;
-float function = oelkast_light_enveloped.packet_type;
+uint8_t Chosen_Option;
 
-// Custom
-float duration_custom = oelkast_light_simple.duration * 100;
-float intensity_custom = oelkast_light_simple.intensity * 0.01;
+float mapfloat(byte x, float in_min, float in_max, float out_min, float out_max)
+{
+    return (float)(x - in_min) * (out_max - out_min) / (float)(in_max - in_min) + out_min;
+}
 
-// void LedStripAdsrUpdate(float intensity, float time_attack, float time_duration, float level, float time_release, float duration);
-// uint8_t packet_type;
-// uint8_t intensity;
-// uint8_t color_red;
-// uint8_t color_green;
-// uint8_t color_blue;
-// uint8_t duration;
-// uint8_t env_attack_time;
-// uint8_t env_decay_time;
-// uint8_t env_sustain_level;
-// uint8_t env_release_time;
+void lightcontroll_write()
+{
+    switch (Chosen_Option)
+    {
+    case 1:
+        LedStripAdsrUpdate(mapfloat(oelkast_light_enveloped.intensity, 0, 255, 0, 0.5), (float)oelkast_light_enveloped.env_attack_time * 2, (float)oelkast_light_enveloped.env_decay_time * 2, mapfloat(oelkast_light_enveloped.env_sustain_level, 0, 255, 0, 0.25), (float)oelkast_light_enveloped.env_release_time * 2, (float)oelkast_light_enveloped.duration * 6, oelkast_light_enveloped.color_red, oelkast_light_enveloped.color_green, oelkast_light_enveloped.color_blue);
+        break;
 
-// uint8_t packet_type;
-// uint8_t intensity;
-// uint8_t duration;
+    case 2:
+        LedStripCustomUpdate(mapfloat(oelkast_light_enveloped.intensity, 0, 255, 0, 0.5), oelkast_light_simple.duration);
+        break;
+    }
+}

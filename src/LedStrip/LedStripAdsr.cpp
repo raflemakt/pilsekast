@@ -2,6 +2,7 @@
 #include "NeoPixelBus.h"
 #include <NeoPixelAnimator.h>
 #include "LedStripCustom.h"
+#include "lightController.h"
 
 const uint16_t PixelCount = 22;      // make sure to set this to the number of pixels in your strip
 const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
@@ -60,9 +61,18 @@ void AnimationUpdateUnlinear(const AnimationParam &param)
     }
 }
 
-void TurnOnStripAttack(float intensity, float time_attack)
+void TurnOnStripAttack(float intensity, float time_attack, byte R, byte G, byte B)
 {
-    RgbColor target = HslColor(120 / 360.0f, 1.0f, intensity);
+    float Hue;
+    if (B > G)
+    {
+        Hue = 360.0f - (acos((R - (0.5 * G) - (0.5 * B)) / (sqrt(pow(R, 2) + pow(G, 2) + pow(B, 2) - R * G - R * B - G * B))) * 180 / M_PI);
+    }
+    else
+    {
+        Hue = (acos((R - (0.5 * G) - (0.5 * B)) / (sqrt(pow(R, 2) + pow(G, 2) + pow(B, 2) - R * G - R * B - G * B))) * 180 / M_PI);
+    }
+    RgbColor target = HslColor(Hue / 360.0f, 1.0f, intensity);
     uint16_t time = time_attack;
 
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
@@ -71,15 +81,16 @@ void TurnOnStripAttack(float intensity, float time_attack)
     animationsAdsr.StartAnimation(0, time, AnimationUpdateLinear);
     stripAdsr.Show();
     expression = 1;
+    Chosen_Option = 1;
 }
 
-void TurnOnStripdecay(float time_decay, float level, float intensity)
+void TurnOnStripdecay(float time_decay, float level, float intensity, float Hue)
 {
     float luminance_target1 = (intensity - level) * 0.7;
     float luminance_target2 = (intensity - level) * 0.3;
-    RgbColor target_1 = HslColor(120 / 360.0f, 1.0f, luminance_target1);
-    RgbColor target_2 = HslColor(120 / 360.0f, 1.0f, luminance_target2);
-    RgbColor target_3 = HslColor(120 / 360.0f, 1.0f, level);
+    RgbColor target_1 = HslColor(Hue / 360.0f, 1.0f, luminance_target1);
+    RgbColor target_2 = HslColor(Hue / 360.0f, 1.0f, luminance_target2);
+    RgbColor target_3 = HslColor(Hue / 360.0f, 1.0f, level);
     uint16_t time = time_decay;
 
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
@@ -102,10 +113,10 @@ void TurnOnStripSubstain(float level, float duration, float time_attack, float t
     stripAdsr.Show();
 }
 
-void TurnOnStripRelease(float level, float time_release)
+void TurnOnStripRelease(float level, float time_release, float Hue)
 {
-    RgbColor target_1 = HslColor(120 / 360.0f, 1.0f, level * 0.7);
-    RgbColor target_2 = HslColor(120 / 360.0f, 1.0f, level * 0.3);
+    RgbColor target_1 = HslColor(Hue / 360.0f, 1.0f, level * 0.7);
+    RgbColor target_2 = HslColor(Hue / 360.0f, 1.0f, level * 0.3);
     RgbColor target_3 = RgbColor(0);
     uint16_t time = time_release;
 
@@ -128,7 +139,7 @@ void TurnOffMasterStripAdsr()
     stripAdsr.Show();
 }
 
-void LedStripAdsrUpdate(float intensity, float time_attack, float time_decay, float level, float time_release, float duration)
+void LedStripAdsrUpdate(float intensity, float time_attack, float time_decay, float level, float time_release, float duration, byte R, byte G, byte B)
 {
     // the normal loop just needs these two to run the active animations
     if (animationsAdsr.IsAnimating())
@@ -139,10 +150,20 @@ void LedStripAdsrUpdate(float intensity, float time_attack, float time_decay, fl
 
     else
     {
+        float Hue;
+        if (B > G)
+        {
+            Hue = 360.0f - (acos((R - (0.5 * G) - (0.5 * B)) / (sqrt(pow(R, 2) + pow(G, 2) + pow(B, 2) - R * G - R * B - G * B))) * 180 / M_PI);
+        }
+        else
+        {
+            Hue = (acos((R - (0.5 * G) - (0.5 * B)) / (sqrt(pow(R, 2) + pow(G, 2) + pow(B, 2) - R * G - R * B - G * B))) * 180 / M_PI);
+        }
+
         switch (expression)
         {
         case 1:
-            TurnOnStripdecay(time_decay, level, intensity);
+            TurnOnStripdecay(time_decay, level, intensity, Hue);
             expression = 2;
             break;
 
@@ -152,7 +173,7 @@ void LedStripAdsrUpdate(float intensity, float time_attack, float time_decay, fl
             break;
 
         case 3:
-            TurnOnStripRelease(level, time_release);
+            TurnOnStripRelease(level, time_release, Hue);
             expression = 4;
             break;
         case 4:

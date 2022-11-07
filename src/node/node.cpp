@@ -7,6 +7,7 @@
 #include "node/HardwareInstance.h"
 #include "network/Registers.h"
 #include "sensors/icm_sensors/icm_sensors.h"
+#include "LedStrip/lightController.h"
 
 namespace Node
 {
@@ -14,7 +15,6 @@ namespace Node
     {
         Serial.println("  on_local_data_receive called");
         NodeTriggers::decide_action_on_pkg_receive();
-        // TurnOnStrip(0.25,5);
     }
 
     void on_local_data_send()
@@ -36,14 +36,15 @@ namespace Node
         memcpy(telepils_announce.instrument_type, &INSTRUMENT_TYPE, sizeof(INSTRUMENT_TYPE));
         LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
 
-    LedStripCustom_setup();
-    
-    //ICMsetup();  // Denne kræsjer med melding: [Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
-    //                Initialization of the sensor returned: Data Underflow
-}
+        LedStripCustom_setup();
 
-void loop() {
-    //LedStripCustomUpdate(0.25,90);
-    //ICMloop();
-}
+        // ICMsetup();  // Denne kræsjer med melding: [Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+        //                 Initialization of the sensor returned: Data Underflow
+    }
+
+    void loop()
+    {
+        lightcontroll_write();
+        // ICMloop();
+    }
 }
