@@ -1,4 +1,5 @@
 #pragma once
+#include "Arduino.h"
 
 void lightcontroll_recive();
 void lightcontroll_write();

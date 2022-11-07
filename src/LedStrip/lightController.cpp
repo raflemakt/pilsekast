@@ -5,6 +5,7 @@
 #include "network/Registers.h"
 #include "LedStripCustom.h"
 #include "LedStripAdsr.h"
+#include "LedStripSimpleHue.h"
 
 uint8_t Chosen_Option;
 
@@ -24,5 +25,8 @@ void lightcontroll_write()
     case 2:
         LedStripCustomUpdate(mapfloat(oelkast_light_enveloped.intensity, 0, 255, 0, 0.5), oelkast_light_simple.duration);
         break;
+
+    case 3:
+        LedStripSimpleUpdate(mapfloat(oelkast_light_simple_hue.intensity, 0, 255, 0, 0.5));
     }
 }

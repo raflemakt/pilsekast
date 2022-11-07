@@ -5,6 +5,7 @@
 #include "LedStrip/LedStripAdsr.h"
 #include "LedStrip/LedStripCustom.h"
 #include "LedStrip/lightController.h"
+#include "LedStrip/LedStripSimpleHue.h"
 
 namespace NodeTriggers
 {
@@ -31,8 +32,7 @@ namespace NodeTriggers
             Serial.println(oelkast_light_simple_hue.intensity);
             Serial.print("    hue: ");
             Serial.println(oelkast_light_simple_hue.hue);
-
-            test_led.set_color(oelkast_light_simple_hue.hue);
+            TurnOnSimpleStrip(mapfloat(oelkast_light_simple_hue.intensity, 0, 255, 0, 0.5), mapfloat(oelkast_light_simple_hue.hue, 0, 255, 0, 360));
         }
         break;
 
