@@ -18,7 +18,8 @@
 // FIXME: Finnes det en bedre plass/løsning for global state/objekter?
 enum AccessPointMenuState : uint8_t {
     RANDOM_COLOR_ON_HIT = 0,
-    POTMETER_DECIDE_COLOR_ON_HIT = 1
+    POTMETER_DECIDE_COLOR_ON_HIT = 1,
+    ADSR_FROM_POTMETERS_ON_HIT = 2
 } access_point_menu_state;
 
 
@@ -51,7 +52,7 @@ void setup()
 
 void loop()
 {   
-    button_top.loop();
+    button_bottom.loop();
     uint8_t drum_reading = getDrumSensor();
     uint8_t potmeter_reading = potmeter_a.read();
 
@@ -87,6 +88,24 @@ void loop()
             }
         } break;
 
+        case AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT: {
+            if (drum_reading > 0){
+                Serial.println("\n## Drum was hit while in ADSR_FROM_POTMETERS_ON_HIT");
+                oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
+                oelkast_light_enveloped.intensity = drum_reading;
+                oelkast_light_enveloped.color_red = 0;
+                oelkast_light_enveloped.color_green = 255;
+                oelkast_light_enveloped.color_blue = 0;
+                oelkast_light_enveloped.duration = potmeter_e.read();
+                oelkast_light_enveloped.env_attack_time = potmeter_a.read();
+                oelkast_light_enveloped.env_decay_time = potmeter_b.read();
+                oelkast_light_enveloped.env_sustain_level = potmeter_c.read();
+                oelkast_light_enveloped.env_release_time = potmeter_d.read();
+
+                LocalNetworkInterface::send<OelkastLightEnveloped>(&oelkast_light_enveloped, BROADCAST);
+            }
+        } break;
+
         default:
             if (drum_reading > 0){
                 Serial.print("\n## Drum was hit in unknown 'AccessPointMenuState': ");
@@ -95,13 +114,17 @@ void loop()
             }
     }
 
-    if (button_top.isPressed()) {
+    if (button_bottom.isPressed()) {
         Serial.print("\n## Changing menu state: ");
         if (access_point_menu_state == AccessPointMenuState::RANDOM_COLOR_ON_HIT) {
             access_point_menu_state = AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT;
             Serial.println("POTMETER_DECIDE_COLOR_ON_HIT");
         }
         else if (access_point_menu_state == AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT) {
+            access_point_menu_state = AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT;
+            Serial.println("ADSR_FROM_POTMETERS_ON_HIT");
+        }
+        else if (access_point_menu_state == AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT) {
             access_point_menu_state = AccessPointMenuState::RANDOM_COLOR_ON_HIT;
             Serial.println("RANDOM_COLOR_ON_HIT");
         }
