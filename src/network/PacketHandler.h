@@ -3,23 +3,26 @@
 #include "network/protocols/TelepilsPkg.h"
 #include "network/protocols/OelkastPkg.h"
 
-enum ProtocolDescriptor : uint8_t {
+enum ProtocolDescriptor : uint8_t
+{
     // ØLKAST-pakketyper: Kommandoer for lys, aktuatorer e.l.
     OELKAST_LIGHT_SIMPLE = 2,
     OELKAST_LIGHT_SIMPLE_HUE = 3,
     OELKAST_LIGHT_ENVELOPED = 4,
     OELKAST_LIGHT_ANIMATION_MODE = 5,
-    
+
     // TELEPILS-pakketyper: Rapportering av telemetriske data
     TELEPILS_ANNOUNCE = 64,
     TELEPILS_NODE_STATUS = 65,
-    TELEPILS_TEMPERATURE = 70
+    TELEPILS_TEMPERATURE = 70,
+    TELEPILS_NOISE = 80
 };
 
 namespace PacketHandler
 {
-void move_data_to_buffer(const uint8_t data[], const uint8_t size);
-void move_data_to_register();
+    void move_data_to_buffer(const uint8_t data[], const uint8_t size);
+    void move_data_to_register();
+    void update_telepils_announce_packet();
 }
 
 // TODO: Plan for parsers.h og parsers.cpp
@@ -31,8 +34,6 @@ void move_data_to_register();
 //          TelepilsTemperature incoming_packet;     <--- Må nok bruke c++ templated class, lykke til
 // Disse funksjonene må også kunne gjøres "baklengs"
 //          pakke en struct over til telepils/ølkast-binærdata klar for transmisjon
-
-
 
 // TODO: Optimaliseringer (ikke strengt nødvendig)
 // - Pakke datatypene ned så små som mulig (f.eks. fra 8->4 bit). Vi kan nok spare

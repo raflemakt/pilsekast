@@ -63,7 +63,6 @@ void loop()
         case AccessPointMenuState::RANDOM_COLOR_ON_HIT: {
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in RANDOM_COLOR_ON_HIT");
-                oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
                 oelkast_light_simple_hue.intensity = drum_reading;
                 oelkast_light_simple_hue.hue += 53;
                 led_a.set_color(oelkast_light_simple_hue.hue);
@@ -79,8 +78,6 @@ void loop()
 
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in POTMETER_DECIDE_COLOR_ON_HIT");
-
-                oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
                 oelkast_light_simple_hue.intensity = drum_reading;
                 oelkast_light_simple_hue.hue = potmeter_reading;
 
@@ -91,7 +88,6 @@ void loop()
         case AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT: {
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in ADSR_FROM_POTMETERS_ON_HIT");
-                oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
                 oelkast_light_enveloped.intensity = drum_reading;
                 oelkast_light_enveloped.color_red = 0;
                 oelkast_light_enveloped.color_green = 255;

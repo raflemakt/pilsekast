@@ -30,10 +30,7 @@ namespace Node
         LocalNetworkInterface::register_send_callback(on_local_data_send);
 
         Serial.println("Sending announcement package to AP");
-        telepils_announce.pkg_header = ProtocolDescriptor::TELEPILS_ANNOUNCE;
-        // telepils_announce.node_mac_address = LocalNetworkInterface::my_mac_address; // FIXME: Feil datatype
-        memcpy(telepils_announce.node_name, &NODE_NAME, sizeof(NODE_NAME));
-        memcpy(telepils_announce.instrument_type, &INSTRUMENT_TYPE, sizeof(INSTRUMENT_TYPE));
+        PacketHandler::update_telepils_announce_packet();
         LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
 
         LedStripCustom_setup();
@@ -44,7 +41,13 @@ namespace Node
 
     void loop()
     {
-        lightcontroll_write();
+        // LedStripCustomUpdate(0.25,90);
         // ICMloop();
+        uint8_t noise = mySound.getNoise();
+        if (noise > 100)
+        {
+            telepils_noise.noise_level = noise;
+            LocalNetworkInterface::send<TelepilsNoise>(&telepils_noise, BROADCAST);
+        }
     }
 }
