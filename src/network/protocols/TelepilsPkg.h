@@ -22,3 +22,8 @@ struct TelepilsTemperature {
     uint8_t temperature;
 };
 
+struct TelepilsNoise {
+    uint8_t pkg_header;
+    uint8_t noise_level;
+};
+

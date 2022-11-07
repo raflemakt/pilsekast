@@ -36,14 +36,22 @@ namespace Node
         memcpy(telepils_announce.instrument_type, &INSTRUMENT_TYPE, sizeof(INSTRUMENT_TYPE));
         LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
 
-    LedStripCustom_setup();
-    
-    //ICMsetup();  // Denne kræsjer med melding: [Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
-    //                Initialization of the sensor returned: Data Underflow
-}
+        LedStripCustom_setup();
 
-void loop() {
-    //LedStripCustomUpdate(0.25,90);
-    //ICMloop();
-}
+        // ICMsetup();  // Denne kræsjer med melding: [Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+        //                 Initialization of the sensor returned: Data Underflow
+    }
+
+    void loop()
+    {
+        // LedStripCustomUpdate(0.25,90);
+        // ICMloop();
+        uint8_t noise = mySound.getNoise();
+        if (noise > 100)
+        {
+            telepils_noise.pkg_header = ProtocolDescriptor::TELEPILS_NOISE;
+            telepils_noise.noise_level = noise;
+            LocalNetworkInterface::send<TelepilsNoise>(&telepils_noise, BROADCAST);
+        }
+    }
 }

@@ -11,7 +11,7 @@ public:
   }
   const int sampleWindow = 50; // Sample window width in mS (50 mS = 20Hz)
   unsigned int sample;
-  int mic_pin = 32;
+  int mic_pin;
   int sig;
   unsigned long sampleMillis; // sample window
 
