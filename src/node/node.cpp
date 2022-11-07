@@ -46,7 +46,6 @@ namespace Node
         uint8_t noise = mySound.getNoise();
         if (noise > 100)
         {
-            telepils_noise.pkg_header = ProtocolDescriptor::TELEPILS_NOISE;
             telepils_noise.noise_level = noise;
             LocalNetworkInterface::send<TelepilsNoise>(&telepils_noise, BROADCAST);
         }

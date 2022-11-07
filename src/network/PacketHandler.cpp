@@ -34,11 +34,11 @@ namespace PacketHandler
     }
 
     void update_telepils_announce_packet() {
-        telepils_announce.pkg_header = ProtocolDescriptor::TELEPILS_ANNOUNCE;
         // telepils_announce.node_mac_address = LocalNetworkInterface::my_mac_address; // FIXME: Feil datatype
-        memcpy(telepils_announce.node_name, &NODE_NAME, sizeof(NODE_NAME));
+        memcpy(telepils_announce.node_name, &NODE_NAME, sizeof(NODE_NAME));   // TODO: gjør dette skikkelig. Dynamic cast?
         memcpy(telepils_announce.instrument_type, &INSTRUMENT_TYPE, sizeof(INSTRUMENT_TYPE));
         telepils_announce.led_strip_led_amount = LED_STRIP_LED_AMOUNT;
+
         #ifdef HAS_ICM_SENSOR
         telepils_announce.has_icm_sensor = true;
         #endif
@@ -73,48 +73,56 @@ namespace PacketHandler
         case OELKAST_LIGHT_SIMPLE:
         {
             Serial.println("    pkg_type: OELKAST_LIGHT_SIMPLE");
+            oelkast_light_simple.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE;
             memcpy(&oelkast_light_simple, data, size);
         }
         break;
         case OELKAST_LIGHT_SIMPLE_HUE:
         {
             Serial.println("    pkg_type: OELKAST_LIGHT_SIMPLE_HUE");
+            oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
             memcpy(&oelkast_light_simple_hue, data, size);
         }
         break;
         case OELKAST_LIGHT_ENVELOPED:
         {
             Serial.println("    pkg_type: OELKAST_LIGHT_ENVELOPED");
+            oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
             memcpy(&oelkast_light_enveloped, data, size);
         }
         break;
         case OELKAST_LIGHT_ANIMATION_MODE:
         {
             Serial.println("    pkg_type: OELKAST_LIGHT_ANIMATION_MODE");
+            oelkast_light_animation_mode.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ANIMATION_MODE;
             memcpy(&oelkast_light_animation_mode, data, size);
         }
         break;
         case TELEPILS_ANNOUNCE:
         {
             Serial.println("    pkg_type: TELEPILS_ANNOUNCE");
+            telepils_announce.packet_type = ProtocolDescriptor::TELEPILS_ANNOUNCE;
             memcpy(&telepils_announce, data, size);
         }
         break;
         case TELEPILS_NODE_STATUS:
         {
             Serial.println("    pkg_type: TELEPILS_NODE_STATUS");
+            telepils_node_status.packet_type = ProtocolDescriptor::TELEPILS_NODE_STATUS;
             memcpy(&telepils_node_status, data, size);
         }
         break;
         case TELEPILS_TEMPERATURE:
         {
             Serial.println("    pkg_type: TELEPILS_TEMPERATURE");
+            telepils_temperature.packet_type = ProtocolDescriptor::TELEPILS_TEMPERATURE;
             memcpy(&telepils_temperature, data, size);
         }
         break;
         case TELEPILS_NOISE:
         {
             Serial.println("    pkg_type: TELEPILS_NOISE");
+            telepils_noise.packet_type = ProtocolDescriptor::TELEPILS_NOISE;
             memcpy(&telepils_noise, data, size);
         }
         break;
