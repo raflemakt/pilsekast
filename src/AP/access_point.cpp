@@ -22,6 +22,8 @@ enum AccessPointMenuState : uint8_t {
     ADSR_FROM_POTMETERS_ON_HIT = 2
 } access_point_menu_state;
 
+uint32_t ap_loop_cycle_iterator = 0;
+
 
 namespace AccessPoint
 {
@@ -69,8 +71,6 @@ void loop()
 
                 LocalNetworkInterface::send<OelkastLightSimpleHue>(&oelkast_light_simple_hue, BROADCAST);
             }
-            
-
         } break;
         
         case AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT: {
@@ -86,18 +86,22 @@ void loop()
         } break;
 
         case AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT: {
+            oelkast_light_enveloped.intensity = drum_reading;
+            oelkast_light_enveloped.color_red = 0;
+            oelkast_light_enveloped.color_green = 255;
+            oelkast_light_enveloped.color_blue = 0;
+            oelkast_light_enveloped.duration = potmeter_e.read();
+            oelkast_light_enveloped.env_attack_time = potmeter_a.read();
+            oelkast_light_enveloped.env_decay_time = potmeter_b.read();
+            oelkast_light_enveloped.env_sustain_level = potmeter_c.read();
+            oelkast_light_enveloped.env_release_time = potmeter_d.read();
+
+            #ifdef HAS_TTGO_SCREEN
+            if (ap_loop_cycle_iterator%50 == 0) Screen::display_adsrd_envelope_transient(0, 0, Screen::SCR_WIDTH, Screen::SCR_HEIGTH);
+            #endif
+
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in ADSR_FROM_POTMETERS_ON_HIT");
-                oelkast_light_enveloped.intensity = drum_reading;
-                oelkast_light_enveloped.color_red = 0;
-                oelkast_light_enveloped.color_green = 255;
-                oelkast_light_enveloped.color_blue = 0;
-                oelkast_light_enveloped.duration = potmeter_e.read();
-                oelkast_light_enveloped.env_attack_time = potmeter_a.read();
-                oelkast_light_enveloped.env_decay_time = potmeter_b.read();
-                oelkast_light_enveloped.env_sustain_level = potmeter_c.read();
-                oelkast_light_enveloped.env_release_time = potmeter_d.read();
-
                 LocalNetworkInterface::send<OelkastLightEnveloped>(&oelkast_light_enveloped, BROADCAST);
             }
         } break;
@@ -125,6 +129,8 @@ void loop()
             Serial.println("RANDOM_COLOR_ON_HIT");
         }
     }
+
+    ap_loop_cycle_iterator++;
 
 }
 }
