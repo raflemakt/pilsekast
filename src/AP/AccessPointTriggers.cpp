@@ -47,6 +47,13 @@ namespace AccessPointTriggers
             Serial.println(telepils_announce.node_name);
             Serial.print("    instrument_type: ");
             Serial.println(telepils_announce.instrument_type);
+            Serial.println("    peripherals on node:");
+            if (telepils_announce.has_icm_sensor)     Serial.println("    ->ICM motion sensor");
+            if (telepils_announce.has_sound_sensor)   Serial.println("    ->sound sensor");
+            if (telepils_announce.has_ttgo_screen)    Serial.println("    ->TTGO screen");
+            if (telepils_announce.led_strip_led_amount) Serial.print("    ->LED strip with ");
+            Serial.print(telepils_announce.led_strip_led_amount); Serial.println(" LEDs");
+            if (telepils_announce.is_access_point)  Serial.println("  warning: Node is configured as access point");
         }
         break;
 

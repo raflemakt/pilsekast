@@ -22,6 +22,7 @@ namespace PacketHandler
 {
     void move_data_to_buffer(const uint8_t data[], const uint8_t size);
     void move_data_to_register();
+    void update_telepils_announce_packet();
 }
 
 // TODO: Plan for parsers.h og parsers.cpp
