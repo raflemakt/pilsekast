@@ -56,6 +56,19 @@ namespace PacketHandler
         #endif
     }
 
+    void update_protocol_descriptors_in_registers() {
+        // FIXME: Veldig ad-hoc dette her... Del av refaktorisering av protokollogikk.
+        telepils_announce.packet_type = ProtocolDescriptor::TELEPILS_ANNOUNCE;
+        telepils_node_status.packet_type = ProtocolDescriptor::TELEPILS_NODE_STATUS;
+        telepils_temperature.packet_type = ProtocolDescriptor::TELEPILS_TEMPERATURE;
+        telepils_noise.packet_type = ProtocolDescriptor::TELEPILS_NOISE;
+
+        oelkast_light_simple.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE;
+        oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
+        oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
+        oelkast_light_animation_mode.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ANIMATION_MODE;
+    }
+
     void move_data_to_register()
     {
         Serial.println("  deserializing package");
@@ -73,56 +86,48 @@ namespace PacketHandler
         case OELKAST_LIGHT_SIMPLE:
         {
             Serial.println("    pkg_type: OELKAST_LIGHT_SIMPLE");
-            oelkast_light_simple.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE;
             memcpy(&oelkast_light_simple, data, size);
         }
         break;
         case OELKAST_LIGHT_SIMPLE_HUE:
         {
             Serial.println("    pkg_type: OELKAST_LIGHT_SIMPLE_HUE");
-            oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
             memcpy(&oelkast_light_simple_hue, data, size);
         }
         break;
         case OELKAST_LIGHT_ENVELOPED:
         {
             Serial.println("    pkg_type: OELKAST_LIGHT_ENVELOPED");
-            oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
             memcpy(&oelkast_light_enveloped, data, size);
         }
         break;
         case OELKAST_LIGHT_ANIMATION_MODE:
         {
             Serial.println("    pkg_type: OELKAST_LIGHT_ANIMATION_MODE");
-            oelkast_light_animation_mode.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ANIMATION_MODE;
             memcpy(&oelkast_light_animation_mode, data, size);
         }
         break;
         case TELEPILS_ANNOUNCE:
         {
             Serial.println("    pkg_type: TELEPILS_ANNOUNCE");
-            telepils_announce.packet_type = ProtocolDescriptor::TELEPILS_ANNOUNCE;
             memcpy(&telepils_announce, data, size);
         }
         break;
         case TELEPILS_NODE_STATUS:
         {
             Serial.println("    pkg_type: TELEPILS_NODE_STATUS");
-            telepils_node_status.packet_type = ProtocolDescriptor::TELEPILS_NODE_STATUS;
             memcpy(&telepils_node_status, data, size);
         }
         break;
         case TELEPILS_TEMPERATURE:
         {
             Serial.println("    pkg_type: TELEPILS_TEMPERATURE");
-            telepils_temperature.packet_type = ProtocolDescriptor::TELEPILS_TEMPERATURE;
             memcpy(&telepils_temperature, data, size);
         }
         break;
         case TELEPILS_NOISE:
         {
             Serial.println("    pkg_type: TELEPILS_NOISE");
-            telepils_noise.packet_type = ProtocolDescriptor::TELEPILS_NOISE;
             memcpy(&telepils_noise, data, size);
         }
         break;
