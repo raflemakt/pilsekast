@@ -40,15 +40,16 @@ void on_local_data_send()
 
 void setup()
 {
-    #ifdef HAS_TTGO_SCREEN
-    Screen::init();
-    Screen::display_test_screen();
-    #endif
-
     Messages::on_boot();
     LocalNetworkInterface::initialize();
     LocalNetworkInterface::register_recv_callback(on_local_data_receive);
     LocalNetworkInterface::register_send_callback(on_local_data_send);
+
+    #ifdef HAS_TTGO_SCREEN
+    Screen::init();
+    Screen::display_info_screen();
+    #endif
+
     Serial.println("Init complete from access_point.cpp --> starting loop.\n");
 }
 
@@ -86,6 +87,7 @@ void loop()
         } break;
 
         case AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT: {
+            oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
             oelkast_light_enveloped.intensity = drum_reading;
             oelkast_light_enveloped.color_red = 0;
             oelkast_light_enveloped.color_green = 255;
@@ -97,7 +99,7 @@ void loop()
             oelkast_light_enveloped.env_release_time = potmeter_d.read();
 
             #ifdef HAS_TTGO_SCREEN
-            if (ap_loop_cycle_iterator%50 == 0) Screen::display_adsrd_envelope_transient(0, 0, Screen::SCR_WIDTH, Screen::SCR_HEIGTH);
+            if (ap_loop_cycle_iterator%50 == 0) Screen::display_adsrd_envelope_transient(18, 50, 200, 80);
             #endif
 
             if (drum_reading > 0){

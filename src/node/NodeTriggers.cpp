@@ -7,6 +7,10 @@
 #include "LedStrip/lightController.h"
 #include "LedStrip/LedStripSimpleHue.h"
 
+#ifdef HAS_TTGO_SCREEN
+#include "UserInterface/TTGO_screen/TTGO_Screen.h"
+#endif
+
 namespace NodeTriggers
 {
     void decide_action_on_pkg_receive()
@@ -57,6 +61,10 @@ namespace NodeTriggers
             Serial.println(oelkast_light_enveloped.env_sustain_level);
             Serial.print("    env_release_time: ");
             Serial.println(oelkast_light_enveloped.env_release_time);
+
+            #ifdef HAS_TTGO_SCREEN
+            Screen::display_adsrd_envelope_transient(0, 0, Screen::SCR_WIDTH, Screen::SCR_HEIGTH);
+            #endif
             TurnOnStripAttack(mapfloat(oelkast_light_enveloped.intensity, 0, 255, 0, 0.5), (float)oelkast_light_enveloped.env_attack_time * 2, oelkast_light_enveloped.color_red, oelkast_light_enveloped.color_green, oelkast_light_enveloped.color_blue);
         }
         break;

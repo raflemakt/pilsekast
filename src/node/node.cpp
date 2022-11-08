@@ -9,6 +9,10 @@
 #include "sensors/icm_sensors/icm_sensors.h"
 #include "LedStrip/lightController.h"
 
+#ifdef HAS_TTGO_SCREEN
+#include "UserInterface/TTGO_screen/TTGO_Screen.h"
+#endif
+
 namespace Node
 {
     void on_local_data_receive()
@@ -32,6 +36,11 @@ namespace Node
         Serial.println("Sending announcement package to AP");
         PacketHandler::update_telepils_announce_packet();
         LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
+
+        #ifdef HAS_TTGO_SCREEN
+        Screen::init();
+        Screen::display_info_screen();
+        #endif
 
         LedStripCustom_setup();
 

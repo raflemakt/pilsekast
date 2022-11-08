@@ -1,11 +1,13 @@
 #include "UserInterface/TTGO_screen/TTGO_Screen.h"
+#include "UserInterface/StringFormatters.h"
 #include "network/Registers.h"
+#include "network/LocalNetworkInterface.h"
 
 #ifdef HAS_TTGO_SCREEN
 
 namespace Screen
 {
-const uint16_t SCR_WIDTH = 237;     // Nullindeksert
+const uint16_t SCR_WIDTH = 239;     // Nullindeksert
 const uint16_t SCR_HEIGTH = 135;    // Nullindeksert
 const auto BACKGROUND_COLOR = TFT_BLACK;
 const uint32_t TFT_MOTSTANDEN_GREEN = 13100;
@@ -18,7 +20,7 @@ TFT_eSprite motstanden_logo_120 = TFT_eSprite(&tft);
 TFT_eSprite motstanden_logo_64 = TFT_eSprite(&tft);
 
 void configure_sprites() {
-    background.createSprite(SCR_WIDTH, SCR_HEIGTH);
+    background.createSprite(SCR_WIDTH+1, SCR_HEIGTH+1);
     background.fillSprite(BACKGROUND_COLOR);
 
     motstanden_logo_120.createSprite(120, 120);
@@ -68,6 +70,20 @@ void display_adsrd_envelope_transient(uint16_t origin_x, uint16_t origin_y, uint
 
     // Draw the sprite
     envelope_window.pushToSprite(&background, origin_x, origin_y);
+    background.pushSprite(0, 0);
+}
+
+void display_info_screen() {
+    background.fillSprite(BACKGROUND_COLOR);
+    motstanden_logo_120.pushToSprite(&background, 4, 12, TFT_BLACK);
+    background.drawRect(0, 0, SCR_WIDTH, SCR_HEIGTH, TFT_MOTSTANDEN_GREEN);
+    #ifdef IS_ACCESS_POINT
+    background.drawString("Pilsekast ACCESS POINT", 4, 0, 1);
+    #else
+    background.drawString("Pilsekast INSTRUMENT NODE", 4, 0, 1);
+    #endif
+    background.drawString("MAC: ", 130, 20, 1);
+    background.drawString(Format::mac_addr_from_array(LocalNetworkInterface::my_mac_address), 130, 29, 1);
     background.pushSprite(0, 0);
 }
 
