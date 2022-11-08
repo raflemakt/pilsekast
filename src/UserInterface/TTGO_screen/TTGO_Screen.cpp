@@ -16,6 +16,7 @@ const uint32_t TFT_MOTSTANDEN_BLUE = 13371;
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite background = TFT_eSprite(&tft);
 TFT_eSprite envelope_window = TFT_eSprite(&tft);
+TFT_eSprite generic_window = TFT_eSprite(&tft);
 TFT_eSprite motstanden_logo_120 = TFT_eSprite(&tft);
 TFT_eSprite motstanden_logo_64 = TFT_eSprite(&tft);
 
@@ -36,6 +37,19 @@ void init() {
     tft.init();
     tft.setRotation(1);
     configure_sprites();
+}
+
+void display_window(const char *window_name, uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth) {
+    const auto window_decoration_heigth = 9;
+    const auto window_border_color = TFT_RED;
+
+    generic_window.createSprite(width, heigth);
+    generic_window.fillSprite(BACKGROUND_COLOR);
+    generic_window.drawRect(0, 0, width, heigth, window_border_color);
+    generic_window.drawFastHLine(0, window_decoration_heigth, width, window_border_color);
+    generic_window.drawString(window_name, 3, 1, 1);
+    generic_window.pushToSprite(&background, origin_x, origin_y);
+    background.pushSprite(0, 0);
 }
 
 void display_adsrd_envelope_transient(uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth) {
@@ -78,12 +92,18 @@ void display_info_screen() {
     motstanden_logo_120.pushToSprite(&background, 4, 12, TFT_BLACK);
     background.drawRect(0, 0, SCR_WIDTH, SCR_HEIGTH, TFT_MOTSTANDEN_GREEN);
     #ifdef IS_ACCESS_POINT
-    background.drawString("Pilsekast ACCESS POINT", 4, 0, 1);
+    background.drawString("Pilsekast AKSESSPUNKT", 4, 0, 1);
     #else
-    background.drawString("Pilsekast INSTRUMENT NODE", 4, 0, 1);
+    background.drawString("Pilsekast INSTRUMENTNODE", 4, 0, 1);
     #endif
     background.drawString("MAC: ", 130, 20, 1);
     background.drawString(Format::mac_addr_from_array(LocalNetworkInterface::my_mac_address), 130, 29, 1);
+
+    background.drawString("Nodenavn:", 130, 50, 1);
+    background.drawString(NODE_NAME, 130, 59, 1);
+
+    background.drawString("Instrumenttype:", 130, 70, 1);
+    background.drawString(INSTRUMENT_TYPE, 130, 79, 1);
     background.pushSprite(0, 0);
 }
 
@@ -93,7 +113,7 @@ void display_test_screen() {
     background.pushSprite(0, 0);
     tft.drawRect(0, 0, 237, 135, TFT_MOTSTANDEN_GREEN);  // Heile skjermen (238x136 ??)
     tft.setCursor(0, 0);
-    tft.print("Pilsekast ACCESS POINT");
+    tft.print("Pilsekast AKSESSPUNKT");
 }
 
 }
