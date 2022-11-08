@@ -9,8 +9,8 @@ const uint16_t PixelPin = 4;         // make sure to set this to the correct pin
 const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
 int flag1 = 1;
 
-NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip1(PixelCount, PixelPin);
-NeoPixelAnimator animations(AnimationChannels); // NeoPixel animation management object
+NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip1(PixelCount, PixelPin); // method of writing to strip
+NeoPixelAnimator animations(AnimationChannels);                            // NeoPixel animation management object
 
 struct MyAnimationState
 {
@@ -38,9 +38,11 @@ void BlendAnimationUpdate(const AnimationParam &param)
     }
 }
 
+// fade to chosen intensity
+// Chosen_option is used in main case in lightcontroller
 void TurnOnStrip(float luminance, float longevity)
 {
-    RgbColor target = HslColor(120/360.0f, 1.0f, luminance);
+    RgbColor target = HslColor(120 / 360.0f, 1.0f, luminance);
     uint16_t time = longevity;
 
     animationState[0].StartingColor = strip1.GetPixelColor(0);
@@ -65,6 +67,7 @@ void TurnOffStrip(float luminance, float longevity)
     flag1 = 0;
 }
 
+// Function to turn off all lights
 void TurnOffMasterStrip()
 {
     for (byte Led = 0; Led <= PixelCount; Led++)
@@ -75,6 +78,7 @@ void TurnOffMasterStrip()
     strip1.Show();
 }
 
+// universal setup for every function using LED-strip turning of and readying
 void LedStripCustom_setup()
 {
     strip1.Begin();
@@ -82,6 +86,7 @@ void LedStripCustom_setup()
     TurnOffMasterStrip();
 }
 
+// Function to run in lightController loop
 void LedStripCustomUpdate(float light, float time)
 {
     // the normal loop just needs these two to run the active animations

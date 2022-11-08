@@ -9,8 +9,8 @@ const uint16_t PixelPin = 4;         // make sure to set this to the correct pin
 const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
 int flag2 = 1;
 
-NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip2(PixelCount, PixelPin);
-NeoPixelAnimator animationsSimple(AnimationChannels); // NeoPixel animation management object
+NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip2(PixelCount, PixelPin); // method of writing to strip
+NeoPixelAnimator animationsSimple(AnimationChannels);                      // NeoPixel animation management object
 
 struct MyAnimationState
 {
@@ -37,7 +37,8 @@ void BlendingAnimationUpdate(const AnimationParam &param)
         strip2.SetPixelColor(pixel, updatedColor);
     }
 }
-
+// fade to chosen intensity and color
+// Chosen_option is used in main case in lightcontroller
 void TurnOnSimpleStrip(float luminance, float Hue)
 {
     RgbColor target = HslColor(Hue / 360.0f, 1.0f, luminance);
@@ -65,6 +66,7 @@ void TurnOffSimpleStrip(float luminance)
     flag2 = 0;
 }
 
+// Function to turn off all lights
 void TurnOffSimpleMasterStrip()
 {
     for (byte Led = 0; Led <= PixelCount; Led++)
@@ -82,6 +84,7 @@ void LedStripSimple_setup()
     TurnOffSimpleMasterStrip();
 }
 
+// function running in loop of lightController
 void LedStripSimpleUpdate(float light)
 {
     // the normal loop just needs these two to run the active animations
