@@ -40,10 +40,10 @@ namespace Node
         PacketHandler::update_telepils_announce_packet();
         LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, BROADCAST);
 
-        #ifdef HAS_TTGO_SCREEN
+#ifdef HAS_TTGO_SCREEN
         Screen::init();
         Screen::display_info_screen();
-        #endif
+#endif
 
         // LedStripCustom_setup();  // Kræsjer når vi bruker TTGO-skjerm med melding:
         //                             [esp32-hal-gpio.c:102] __pinMode(): Invalid pin selected
@@ -56,13 +56,14 @@ namespace Node
 
     void loop()
     {
-        #ifdef HAS_TTGO_SCREEN
+#ifdef HAS_TTGO_SCREEN
         // Gå tilbake til infoskjermen 5 sekunder etter ny pakke har kommet inn
-        if (millis() - last_pkg_receive_timer > 5000) Screen::display_info_screen();
-        #endif
+        if (millis() - last_pkg_receive_timer > 5000)
+            Screen::display_info_screen();
+#endif
 
-        // LedStripCustomUpdate(0.25,90);
-        // ICMloop();
+        // lightcontroll_write();
+        //  ICMloop();
         uint8_t noise = mySound.getNoise();
         if (noise > 100)
         {
