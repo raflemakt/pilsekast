@@ -3,10 +3,11 @@
 #include <NeoPixelAnimator.h>
 #include "LedStripCustom.h"
 #include "lightController.h"
+#include "configuration.h"
 
-const uint16_t PixelCount = 22;      // make sure to set this to the number of pixels in your strip
-const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
-const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
+const uint16_t PixelCount = LED_STRIP_LED_AMOUNT; // make sure to set this to the number of pixels in your strip
+const uint16_t PixelPin = 4;                      // make sure to set this to the correct pin, ignored for Esp8266
+const uint8_t AnimationChannels = 1;              // we only need one as all the pixels are animated at once
 int flag1 = 1;
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip1(PixelCount, PixelPin); // method of writing to strip

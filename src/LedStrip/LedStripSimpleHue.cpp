@@ -3,10 +3,11 @@
 #include <NeoPixelAnimator.h>
 #include "LedStripCustom.h"
 #include "lightController.h"
+#include "configuration.h"
 
-const uint16_t PixelCount = 22;      // make sure to set this to the number of pixels in your strip
-const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
-const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
+const uint16_t PixelCount = LED_STRIP_LED_AMOUNT; // make sure to set this to the number of pixels in your strip
+const uint16_t PixelPin = 4;                      // make sure to set this to the correct pin, ignored for Esp8266
+const uint8_t AnimationChannels = 1;              // we only need one as all the pixels are animated at once
 int flag2 = 1;
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip2(PixelCount, PixelPin); // method of writing to strip
@@ -42,7 +43,7 @@ void BlendingAnimationUpdate(const AnimationParam &param)
 void TurnOnSimpleStrip(float luminance, float Hue)
 {
     RgbColor target = HslColor(Hue / 360.0f, 1.0f, luminance);
-    uint16_t time = 10;
+    uint16_t time = 20;
 
     animationSimpleState[0].StartingColor = strip2.GetPixelColor(0);
     animationSimpleState[0].EndingColor = target;
@@ -56,7 +57,7 @@ void TurnOnSimpleStrip(float luminance, float Hue)
 void TurnOffSimpleStrip(float luminance)
 {
     // fade to black
-    uint16_t time = 10;
+    uint16_t time = 20;
 
     animationSimpleState[0].StartingColor = strip2.GetPixelColor(0);
     animationSimpleState[0].EndingColor = RgbColor(0);
