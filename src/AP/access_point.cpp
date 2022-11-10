@@ -64,6 +64,11 @@ void loop()
     
     switch (access_point_menu_state) {
         case AccessPointMenuState::RANDOM_COLOR_ON_HIT: {
+
+            #ifdef HAS_TTGO_SCREEN
+            Screen::display_window("Modus: RANDOM_COLOR_ON_HIT", 10, 90, 200, 35);
+            #endif
+
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in RANDOM_COLOR_ON_HIT");
                 oelkast_light_simple_hue.intensity = drum_reading;
@@ -76,6 +81,10 @@ void loop()
         
         case AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT: {
             led_a.set_color(potmeter_reading);
+
+            #ifdef HAS_TTGO_SCREEN
+            Screen::display_window("Modus: POTMETER_DECIDE_COLOR_ON_HIT", 10, 90, 200, 35);
+            #endif
 
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in POTMETER_DECIDE_COLOR_ON_HIT");
@@ -99,7 +108,10 @@ void loop()
             oelkast_light_enveloped.env_release_time = potmeter_d.read();
 
             #ifdef HAS_TTGO_SCREEN
-            if (ap_loop_cycle_iterator%50 == 0) Screen::display_adsrd_envelope_transient(18, 50, 200, 80);
+            if (ap_loop_cycle_iterator%50 == 0) {
+                Screen::display_window("Modus: ADSR_FROM_POTMETERS_ON_HIT", 10, 60, 200, 60);
+                Screen::display_adsrd_envelope_transient(12, 71, 195, 55);
+            }
             #endif
 
             if (drum_reading > 0){
@@ -117,6 +129,10 @@ void loop()
     }
 
     if (button_bottom.isPressed()) {
+        #ifdef HAS_TTGO_SCREEN
+        Screen::display_info_screen();
+        #endif
+
         Serial.print("\n## Changing menu state: ");
         if (access_point_menu_state == AccessPointMenuState::RANDOM_COLOR_ON_HIT) {
             access_point_menu_state = AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT;

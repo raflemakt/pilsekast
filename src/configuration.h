@@ -29,5 +29,5 @@ const uint8_t TRANSMISSION_BUFFER_SIZE = 128;
 const uint8_t LOCAL_NETWORK_CHANNEL = 0;
 
 // Konfigurasjon av nodenavn og instrumenttype
-const String NODE_NAME = "Bjørn Bass";
+const String NODE_NAME = "Bjarne Bass";
 const String INSTRUMENT_TYPE = "basstromme";
