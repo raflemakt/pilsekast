@@ -4,12 +4,12 @@
 // Denne innstillingen velger om det er AP eller node som blir programmert.
 //   Dersom IS_ACCESS_POINT er definert  ---> programmerer aksesspunkt (AP/basstromme)
 //   Dersom IS_ACCESS_POINT ikke er definert ---> programmerer node (instrument)
-#define IS_ACCESS_POINT
+//#define IS_ACCESS_POINT
 
 // Ekstrautstyr, kommenter ut dersom de ikke er tilkobla
 //#define HAS_SOUND_SENSOR
 //#define HAS_ICM_SENSOR
-#define HAS_TTGO_SCREEN
+//#define HAS_TTGO_SCREEN
 
 // Antall lys i LED-stripe. 0 --> ingen LED-stripe
 const uint8_t LED_STRIP_LED_AMOUNT = 20;
