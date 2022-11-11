@@ -69,6 +69,18 @@ namespace AccessPointTriggers
         }
         break;
 
+        case TELEPILS_ACCELERATION:
+        {
+            Serial.println("  detected TELEPILS_ACCELERATION packet");
+            Serial.println("    --> Alerting all nodes");
+            oelkast_light_simple_hue.intensity = 255;
+            oelkast_light_simple_hue.hue = 255;  // <--- rød?
+            led_a.set_color(oelkast_light_simple_hue.hue);
+
+            LocalNetworkInterface::send<OelkastLightSimpleHue>(&oelkast_light_simple_hue, BROADCAST);
+        }
+        break;
+
         case TELEPILS_NOISE:
         {
             Serial.println("  detected TELEPILS_NOISE packet");
