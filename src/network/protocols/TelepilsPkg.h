@@ -31,5 +31,6 @@ struct TelepilsTemperature {
 struct TelepilsNoise {
     uint8_t packet_type;
     uint8_t noise_level;
+    uint8_t noise_record;
 };
 

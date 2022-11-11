@@ -62,13 +62,14 @@ namespace NodeTriggers
             Serial.print("    env_release_time: ");
             Serial.println(oelkast_light_enveloped.env_release_time);
 
-#ifdef HAS_TTGO_SCREEN
+            #ifdef HAS_TTGO_SCREEN
             // Lager et "vindu" midt på skjermen med ADSR-graf. Om vi vil gå videre med denne "vindu"-stilen burde vi
             // lage en skikkelig "window manager".
             auto y_pos = 40;
-            Screen::display_adsrd_envelope_transient(5, y_pos, Screen::SCR_WIDTH - 10, Screen::SCR_HEIGTH - y_pos - 5);
+            Screen::display_adsrd_envelope_transient_component(5, y_pos, Screen::SCR_WIDTH-10, Screen::SCR_HEIGTH-y_pos-5);
             Screen::tft.drawString("OELKAST_LIGHT_ENVELOPED", 80, y_pos + 2, 1);
-#endif
+            #endif
+            
             TurnOnStripAttack(mapfloat(oelkast_light_enveloped.intensity, 0, 255, 0, 0.5), (float)oelkast_light_enveloped.env_attack_time * 2, oelkast_light_enveloped.color_red, oelkast_light_enveloped.color_green, oelkast_light_enveloped.color_blue);
         }
         break;
