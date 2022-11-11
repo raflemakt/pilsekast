@@ -43,7 +43,7 @@ void BlendingAnimationUpdate(const AnimationParam &param)
 void TurnOnSimpleStrip(float luminance, float Hue)
 {
     RgbColor target = HslColor(Hue / 360.0f, 1.0f, luminance);
-    uint16_t time = 20;
+    uint16_t time = 300;
 
     animationSimpleState[0].StartingColor = strip2.GetPixelColor(0);
     animationSimpleState[0].EndingColor = target;
@@ -57,7 +57,7 @@ void TurnOnSimpleStrip(float luminance, float Hue)
 void TurnOffSimpleStrip(float luminance)
 {
     // fade to black
-    uint16_t time = 20;
+    uint16_t time = 300;
 
     animationSimpleState[0].StartingColor = strip2.GetPixelColor(0);
     animationSimpleState[0].EndingColor = RgbColor(0);
