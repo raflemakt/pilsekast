@@ -5,9 +5,9 @@
 #include "lightController.h"
 #include "configuration.h"
 
-const uint16_t PixelCount = 21; // make sure to set this to the number of pixels in your strip
-const uint16_t PixelPin = 4;                      // make sure to set this to the correct pin, ignored for Esp8266
-const uint8_t AnimationChannels = 1;              // we only need one as all the pixels are animated at once
+const uint16_t PixelCount = LED_STRIP_LED_AMOUNT;      // make sure to set this to the number of pixels in your strip
+const uint16_t PixelPin = 4;         // make sure to set this to the correct pin, ignored for Esp8266
+const uint8_t AnimationChannels = 1; // we only need one as all the pixels are animated at once
 byte expression;
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> stripAdsr(PixelCount, PixelPin); // method of writing to strip
@@ -110,12 +110,8 @@ void TurnOnStripdecay(float time_decay, float level, float intensity, float Hue)
 // function responsible for Substain in ADSR function
 void TurnOnStripSubstain(float level, float duration, float time_attack, float time_decay)
 {
-    uint16_t time = duration - time_attack - time_decay;
-    if (time < 0)
-    {
-        time=-1*time;
-    }
-    
+    uint16_t time = duration;
+
     animationStateAdsr[0].StartingColor = stripAdsr.GetPixelColor(0);
     animationStateAdsr[0].EndingColor = stripAdsr.GetPixelColor(0);
 

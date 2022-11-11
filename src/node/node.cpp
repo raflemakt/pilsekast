@@ -45,7 +45,7 @@ namespace Node
         Screen::display_info_screen();
 #endif
 
-        // LedStripCustom_setup();  // Kræsjer når vi bruker TTGO-skjerm med melding:
+        LedStripCustom_setup();  // Kræsjer når vi bruker TTGO-skjerm med melding:
         //                             [esp32-hal-gpio.c:102] __pinMode(): Invalid pin selected
         //                             E (246) g pio: gpio_set_level_(226): GPIO output gpio_num error
         //                          Brukes denne? Evt bytt til annen pin.
@@ -62,8 +62,8 @@ namespace Node
             Screen::display_info_screen();
 #endif
 
-        // lightcontroll_write();
-        //  ICMloop();
+        lightcontroll_write();
+        //ICMloop();
         uint8_t noise = mySound.getNoise();
         if (noise > mySound.noiseThreshold)
         {
