@@ -39,6 +39,10 @@ void init() {
     configure_sprites();
 }
 
+void update() {
+    background.pushSprite(0, 0);
+}
+
 void display_window(const char *window_name, uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth) {
     const auto window_decoration_heigth = 9;
     const auto window_border_color = TFT_RED;
@@ -49,10 +53,9 @@ void display_window(const char *window_name, uint16_t origin_x, uint16_t origin_
     generic_window.drawFastHLine(0, window_decoration_heigth, width, window_border_color);
     generic_window.drawString(window_name, 3, 1, 1);
     generic_window.pushToSprite(&background, origin_x, origin_y);
-    background.pushSprite(0, 0);
 }
 
-void display_adsrd_envelope_transient(uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth) {
+void display_adsrd_envelope_transient_component(uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth) {
     auto attack = oelkast_light_enveloped.env_attack_time;
     auto decay = oelkast_light_enveloped.env_decay_time;
     auto sustain = oelkast_light_enveloped.env_sustain_level;
@@ -82,9 +85,15 @@ void display_adsrd_envelope_transient(uint16_t origin_x, uint16_t origin_y, uint
     auto release_end_x = duration_end_x + (release*width/256/4);
     envelope_window.drawLine(duration_end_x, sustain_y, release_end_x, heigth, graph_color);
 
-    // Draw the sprite
+    // Draw to background
     envelope_window.pushToSprite(&background, origin_x, origin_y);
-    background.pushSprite(0, 0);
+}
+
+void display_generic_background(const char* header_text) {
+    background.fillSprite(BACKGROUND_COLOR);
+    background.drawRect(0, 0, SCR_WIDTH, SCR_HEIGTH, TFT_MOTSTANDEN_GREEN);
+    motstanden_logo_64.pushToSprite(&background, SCR_WIDTH-66, 3, TFT_BLACK);
+    background.drawString(header_text, 4, 0, 1);
 }
 
 void display_info_screen() {
@@ -104,13 +113,17 @@ void display_info_screen() {
 
     background.drawString("Instrumenttype:", 130, 70, 1);
     background.drawString(INSTRUMENT_TYPE, 130, 79, 1);
-    background.pushSprite(0, 0);
+}
+
+void display_adsr_screen() {
+    display_generic_background("Modus: ADSR_FROM_POTMETERS_ON_HIT");
+    background.drawString("Atk: ", 30, 30, 1);
+    display_adsrd_envelope_transient_component(5, 70, 220, 40);
 }
 
 void display_test_screen() {
     motstanden_logo_120.pushToSprite(&background, 4, 12, TFT_BLACK);
     motstanden_logo_64.pushToSprite(&background, 133, 33, TFT_BLACK);
-    background.pushSprite(0, 0);
     tft.drawRect(0, 0, 237, 135, TFT_MOTSTANDEN_GREEN);  // Heile skjermen (238x136 ??)
     tft.setCursor(0, 0);
     tft.print("Pilsekast AKSESSPUNKT");

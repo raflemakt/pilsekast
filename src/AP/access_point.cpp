@@ -48,6 +48,7 @@ void setup()
     #ifdef HAS_TTGO_SCREEN
     Screen::init();
     Screen::display_info_screen();
+    Screen::update();
     #endif
 
     Serial.println("Init complete from access_point.cpp --> starting loop.\n");
@@ -58,6 +59,10 @@ void loop()
     button_bottom.loop();
     uint8_t drum_reading = getDrumSensor();
     uint8_t potmeter_reading = potmeter_a.read();
+
+    #ifdef HAS_TTGO_SCREEN
+    if (ap_loop_cycle_iterator%50 == 0) Screen::update();
+    #endif
 
 
     // TODO: Flytt til egen fil? AccessPointTriggers.h og AccessPointMenu.h
@@ -109,8 +114,7 @@ void loop()
 
             #ifdef HAS_TTGO_SCREEN
             if (ap_loop_cycle_iterator%50 == 0) {
-                Screen::display_window("Modus: ADSR_FROM_POTMETERS_ON_HIT", 10, 60, 200, 60);
-                Screen::display_adsrd_envelope_transient(12, 71, 195, 55);
+                Screen::display_adsr_screen();
             }
             #endif
 
@@ -129,11 +133,7 @@ void loop()
     }
 
     if (button_bottom.isPressed()) {
-        #ifdef HAS_TTGO_SCREEN
-        Screen::display_info_screen();
-        #endif
-
-        Serial.print("\n## Changing menu state: ");
+        int("\n## Changing menu state: ");
         if (access_point_menu_state == AccessPointMenuState::RANDOM_COLOR_ON_HIT) {
             access_point_menu_state = AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT;
             Serial.println("POTMETER_DECIDE_COLOR_ON_HIT");
