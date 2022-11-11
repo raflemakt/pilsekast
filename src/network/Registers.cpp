@@ -8,6 +8,7 @@ TelepilsAnnounce telepils_announce = {0};
 TelepilsNodeStatus telepils_node_status = {0};
 TelepilsTemperature telepils_temperature = {0};
 TelepilsNoise telepils_noise = {0};
+TelePilsAcceleration telepils_acceleration = {0};
 
 OelkastLightSimple oelkast_light_simple = {0};
 OelkastLightSimpleHue oelkast_light_simple_hue = {0};

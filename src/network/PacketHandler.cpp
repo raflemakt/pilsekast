@@ -62,6 +62,7 @@ namespace PacketHandler
         telepils_node_status.packet_type = ProtocolDescriptor::TELEPILS_NODE_STATUS;
         telepils_temperature.packet_type = ProtocolDescriptor::TELEPILS_TEMPERATURE;
         telepils_noise.packet_type = ProtocolDescriptor::TELEPILS_NOISE;
+        telepils_acceleration.packet_type = ProtocolDescriptor::TELEPILS_ACCELERATION;
 
         oelkast_light_simple.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE;
         oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
@@ -125,6 +126,11 @@ namespace PacketHandler
             memcpy(&telepils_temperature, data, size);
         }
         break;
+        case TELEPILS_ACCELERATION:
+        {
+            Serial.println("    pkg_type: TELEPILS_ACCELERATION");
+            memcpy(&telepils_acceleration, data, size);
+        }
         case TELEPILS_NOISE:
         {
             Serial.println("    pkg_type: TELEPILS_NOISE");
