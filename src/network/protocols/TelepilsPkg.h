@@ -36,6 +36,6 @@ struct TelepilsNoise {
 
 struct TelePilsAcceleration {
     uint8_t packet_type;
-    uint8_t accelleration;
+    uint8_t acceleration;
 };
 

@@ -63,7 +63,15 @@ namespace Node
 #endif
 
         lightcontroll_write();
-        //ICMloop();
+        ICMloop();
+        if (accVerdi > 0.5)
+        {
+            uint8_t acc=mapfloat(accVerdi,0,3.5,0,255);
+            telepils_acceleration.acceleration = acc;
+            LocalNetworkInterface::send<TelePilsAcceleration>(&telepils_acceleration, BROADCAST);
+
+
+        }
         uint8_t noise = mySound.getNoise();
         if (noise > mySound.noiseThreshold)
         {
