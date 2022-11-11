@@ -1,7 +1,7 @@
 #include "network/PacketHandler.h"
 #include "network/Registers.h"
 #include "network/LocalNetworkInterface.h"
-#include "node/HardwareInstance.h"
+#include "AP/HardwareInstance.h"
 
 namespace AccessPointTriggers
 {

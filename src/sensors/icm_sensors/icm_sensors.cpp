@@ -5,7 +5,7 @@ unsigned long lastTime = 0;
 
 ICM_20948_I2C myICM;
 
-void setup()
+void ICMsetup()
 {
   Serial.begin(115200);
   while (!Serial)
@@ -36,20 +36,22 @@ float absValuePrint(float x, float y, float z)
   return sqrt(sq(x) + sq(y) + sq(z));
 }
 
-void printAccVerdi(ICM_20948_I2C *sensor)
+float printAccVerdi(ICM_20948_I2C *sensor)
 {
-  float accVerdi = absValuePrint(9.81 / 1000 * (sensor->gyrX()), 9.81 / 1000 * (sensor->gyrY()), 9.81 / 1000 * (sensor->gyrZ()));
-  Serial.println(accVerdi);
+  return absValuePrint(9.81 / 1000 * (sensor->gyrX()), 9.81 / 1000 * (sensor->gyrY()), 9.81 / 1000 * (sensor->gyrZ()));
 }
 
-void loop(){
+float ICMupdate(){
   if (myICM.dataReady())
   {
     myICM.getAGMT();
-    printAccVerdi(&myICM);
+    float accValue = printAccVerdi(&myICM);
+    return accValue;
   }
-  else
-  {
-    Serial.println("Waiting for data");
-  }
+  return 0;
+}
+
+void ICMloop()
+{
+
 }

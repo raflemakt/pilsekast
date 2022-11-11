@@ -50,7 +50,7 @@ namespace Node
         //                             E (246) g pio: gpio_set_level_(226): GPIO output gpio_num error
         //                          Brukes denne? Evt bytt til annen pin.
 
-        // ICMsetup();  // Denne kræsjer med melding: [Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
+        ICMsetup();  // Denne kræsjer med melding: [Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1
         //                 Initialization of the sensor returned: Data Underflow
     }
 
@@ -63,11 +63,11 @@ namespace Node
 #endif
 
         lightcontroll_write();
-        ICMloop();
-        if (accVerdi > 0.5)
+        float acc = ICMupdate();
+        if (acc > 0.5)
         {
-            uint8_t acc=mapfloat(accVerdi,0,3.5,0,255);
-            telepils_acceleration.acceleration = acc;
+            uint8_t accv=mapfloat(acc,0,3.5,0,255);
+            telepils_acceleration.acceleration = accv;
             LocalNetworkInterface::send<TelePilsAcceleration>(&telepils_acceleration, BROADCAST);
 
 
