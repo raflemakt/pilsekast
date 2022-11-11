@@ -30,6 +30,7 @@ void send(T* package, MacAddress destination_address) {
 
     if (transmission_size > TRANSMISSION_BUFFER_SIZE) Serial.println("  data too large for buffer, discarding");
 
+    PacketHandler::update_protocol_descriptors_in_registers();
     memcpy(&transmission_buffer, package, transmission_size);
 
     Serial.println("  overwriting transmission buffer");

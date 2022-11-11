@@ -33,6 +33,42 @@ namespace PacketHandler
         Serial.println(Format::array_as_hex(LocalNetworkInterface::transmission_buffer, size));
     }
 
+    void update_telepils_announce_packet() {
+        // telepils_announce.node_mac_address = LocalNetworkInterface::my_mac_address; // FIXME: Feil datatype
+        memcpy(telepils_announce.node_name, &NODE_NAME, sizeof(NODE_NAME));   // TODO: gjør dette skikkelig. Dynamic cast?
+        memcpy(telepils_announce.instrument_type, &INSTRUMENT_TYPE, sizeof(INSTRUMENT_TYPE));
+        telepils_announce.led_strip_led_amount = LED_STRIP_LED_AMOUNT;
+
+        #ifdef HAS_ICM_SENSOR
+        telepils_announce.has_icm_sensor = true;
+        #endif
+
+        #ifdef HAS_SOUND_SENSOR
+        telepils_announce.has_sound_sensor = true;
+        #endif
+
+        #ifdef HAS_TTGO_SCREEN
+        telepils_announce.has_ttgo_screen = true;
+        #endif
+
+        #ifdef IS_ACCESS_POINT
+        telepils_announce.is_access_point = true;
+        #endif
+    }
+
+    void update_protocol_descriptors_in_registers() {
+        // FIXME: Veldig ad-hoc dette her... Del av refaktorisering av protokollogikk.
+        telepils_announce.packet_type = ProtocolDescriptor::TELEPILS_ANNOUNCE;
+        telepils_node_status.packet_type = ProtocolDescriptor::TELEPILS_NODE_STATUS;
+        telepils_temperature.packet_type = ProtocolDescriptor::TELEPILS_TEMPERATURE;
+        telepils_noise.packet_type = ProtocolDescriptor::TELEPILS_NOISE;
+
+        oelkast_light_simple.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE;
+        oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
+        oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
+        oelkast_light_animation_mode.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ANIMATION_MODE;
+    }
+
     void move_data_to_register()
     {
         Serial.println("  deserializing package");

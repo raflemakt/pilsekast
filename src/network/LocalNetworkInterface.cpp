@@ -19,7 +19,7 @@ esp_now_peer_info_t peer_buffer = {};
 esp_now_peer_num_t peer_num;
 
 
-LocalNetworkInterface::MacAddress my_mac_address = {0};
+LocalNetworkInterface::MacAddress LocalNetworkInterface::my_mac_address = {0};
 LocalNetworkInterface::UserCallbackFunction user_configured_recv_cb = nullptr;
 LocalNetworkInterface::UserCallbackFunction user_configured_send_cb = nullptr;
 
@@ -80,7 +80,7 @@ void esp_now_on_data_receive(const uint8_t *mac_addr, const uint8_t *incoming_da
 namespace LocalNetworkInterface
 {
 void initialize(){
-    //my_mac_address = WiFi.macAddress();  //FIXME: feil datatype, String --> unsigned char [6]. Bruke union?
+    WiFi.macAddress(my_mac_address);  // Dårlig navngitt funksjon: vi setter ikke MAC, men lagrer den
     
     Serial.println("WiFi mode WIFI_STA");
     Serial.print("  my MAC: ");

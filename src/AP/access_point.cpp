@@ -22,6 +22,8 @@ enum AccessPointMenuState : uint8_t {
     ADSR_FROM_POTMETERS_ON_HIT = 2
 } access_point_menu_state;
 
+uint32_t ap_loop_cycle_iterator = 0;
+
 
 namespace AccessPoint
 {
@@ -38,15 +40,16 @@ void on_local_data_send()
 
 void setup()
 {
-    #ifdef HAS_TTGO_SCREEN
-    Screen::init();
-    Screen::display_test_screen();
-    #endif
-
     Messages::on_boot();
     LocalNetworkInterface::initialize();
     LocalNetworkInterface::register_recv_callback(on_local_data_receive);
     LocalNetworkInterface::register_send_callback(on_local_data_send);
+
+    #ifdef HAS_TTGO_SCREEN
+    Screen::init();
+    Screen::display_info_screen();
+    #endif
+
     Serial.println("Init complete from access_point.cpp --> starting loop.\n");
 }
 
@@ -61,26 +64,30 @@ void loop()
     
     switch (access_point_menu_state) {
         case AccessPointMenuState::RANDOM_COLOR_ON_HIT: {
+
+            #ifdef HAS_TTGO_SCREEN
+            Screen::display_window("Modus: RANDOM_COLOR_ON_HIT", 10, 90, 200, 35);
+            #endif
+
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in RANDOM_COLOR_ON_HIT");
-                oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
                 oelkast_light_simple_hue.intensity = drum_reading;
                 oelkast_light_simple_hue.hue += 53;
                 led_a.set_color(oelkast_light_simple_hue.hue);
 
                 LocalNetworkInterface::send<OelkastLightSimpleHue>(&oelkast_light_simple_hue, BROADCAST);
             }
-            
-
         } break;
         
         case AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT: {
             led_a.set_color(potmeter_reading);
 
+            #ifdef HAS_TTGO_SCREEN
+            Screen::display_window("Modus: POTMETER_DECIDE_COLOR_ON_HIT", 10, 90, 200, 35);
+            #endif
+
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in POTMETER_DECIDE_COLOR_ON_HIT");
-
-                oelkast_light_simple_hue.packet_type = ProtocolDescriptor::OELKAST_LIGHT_SIMPLE_HUE;
                 oelkast_light_simple_hue.intensity = drum_reading;
                 oelkast_light_simple_hue.hue = potmeter_reading;
 
@@ -89,19 +96,26 @@ void loop()
         } break;
 
         case AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT: {
+            oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
+            oelkast_light_enveloped.intensity = drum_reading;
+            oelkast_light_enveloped.color_red = 0;
+            oelkast_light_enveloped.color_green = 255;
+            oelkast_light_enveloped.color_blue = 0;
+            oelkast_light_enveloped.duration = potmeter_e.read();
+            oelkast_light_enveloped.env_attack_time = potmeter_a.read();
+            oelkast_light_enveloped.env_decay_time = potmeter_b.read();
+            oelkast_light_enveloped.env_sustain_level = potmeter_c.read();
+            oelkast_light_enveloped.env_release_time = potmeter_d.read();
+
+            #ifdef HAS_TTGO_SCREEN
+            if (ap_loop_cycle_iterator%50 == 0) {
+                Screen::display_window("Modus: ADSR_FROM_POTMETERS_ON_HIT", 10, 60, 200, 60);
+                Screen::display_adsrd_envelope_transient(12, 71, 195, 55);
+            }
+            #endif
+
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in ADSR_FROM_POTMETERS_ON_HIT");
-                oelkast_light_enveloped.packet_type = ProtocolDescriptor::OELKAST_LIGHT_ENVELOPED;
-                oelkast_light_enveloped.intensity = drum_reading;
-                oelkast_light_enveloped.color_red = 0;
-                oelkast_light_enveloped.color_green = 255;
-                oelkast_light_enveloped.color_blue = 0;
-                oelkast_light_enveloped.duration = potmeter_e.read();
-                oelkast_light_enveloped.env_attack_time = potmeter_a.read();
-                oelkast_light_enveloped.env_decay_time = potmeter_b.read();
-                oelkast_light_enveloped.env_sustain_level = potmeter_c.read();
-                oelkast_light_enveloped.env_release_time = potmeter_d.read();
-
                 LocalNetworkInterface::send<OelkastLightEnveloped>(&oelkast_light_enveloped, BROADCAST);
             }
         } break;
@@ -115,6 +129,10 @@ void loop()
     }
 
     if (button_bottom.isPressed()) {
+        #ifdef HAS_TTGO_SCREEN
+        Screen::display_info_screen();
+        #endif
+
         Serial.print("\n## Changing menu state: ");
         if (access_point_menu_state == AccessPointMenuState::RANDOM_COLOR_ON_HIT) {
             access_point_menu_state = AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT;
@@ -129,6 +147,8 @@ void loop()
             Serial.println("RANDOM_COLOR_ON_HIT");
         }
     }
+
+    ap_loop_cycle_iterator++;
 
 }
 }
