@@ -11,9 +11,12 @@ public:
   }
   const int sampleWindow = 50; // Sample window width in mS (50 mS = 20Hz)
   unsigned int sample;
-  int mic_pin = 32;
+  int mic_pin;
   int sig;
   unsigned long sampleMillis; // sample window
+
+  uint8_t noiseThreshold = 100; // can be fetched by class calls
+  uint8_t noiseRecord = 0;
 
   unsigned int peakToPeak = 0; // peak-to-peak level
   unsigned int signalMax = 0;
@@ -45,10 +48,16 @@ public:
       sig = map(peakToPeak, 0, 4095, 0, 255);
       uint8_t sig_uint8_t = sig;
 
+      if (sig_uint8_t > noiseRecord)
+      {
+        noiseRecord = sig_uint8_t;
+      }
+
       sampleMillis = millis();
       peakToPeak = 0;
       signalMax = 0;
       signalMin = 4095;
+      // Serial.println(sig_uint8_t);
 
       return sig_uint8_t;
     }

@@ -1,6 +1,5 @@
 #include "Registers.h"
 
-
 // TODO: I stedet for å instansiere alle disse structene der de fleste vil
 //       forbli ubrukt kan vi vurdere å gjøre dynamisk allokering av minne.
 //       Vi bruker i skrivende stund 12% av RAM, så dette er kanskje en
@@ -8,6 +7,7 @@
 TelepilsAnnounce telepils_announce = {0};
 TelepilsNodeStatus telepils_node_status = {0};
 TelepilsTemperature telepils_temperature = {0};
+TelepilsNoise telepils_noise = {0};
 
 OelkastLightSimple oelkast_light_simple = {0};
 OelkastLightSimpleHue oelkast_light_simple_hue = {0};
