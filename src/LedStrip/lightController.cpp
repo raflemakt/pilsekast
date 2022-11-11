@@ -22,7 +22,7 @@ void lightcontroll_write()
     switch (Chosen_Option)
     {
     case 1:
-        LedStripAdsrUpdate(mapfloat(oelkast_light_enveloped.intensity, 0, 255, 0, 0.5), (float)oelkast_light_enveloped.env_attack_time * 2, (float)oelkast_light_enveloped.env_decay_time * 2, mapfloat(oelkast_light_enveloped.env_sustain_level, 0, 255, 0, 0.25), (float)oelkast_light_enveloped.env_release_time * 2, (float)oelkast_light_enveloped.duration * 6, oelkast_light_enveloped.color_red, oelkast_light_enveloped.color_green, oelkast_light_enveloped.color_blue);
+        LedStripAdsrUpdate(mapfloat(oelkast_light_enveloped.intensity, 0, 255, 0, 0.5), (float)oelkast_light_enveloped.env_attack_time * 2, (float)oelkast_light_enveloped.env_decay_time * 2, mapfloat(oelkast_light_enveloped.env_sustain_level, 0, 255, 0, 0.25), (float)oelkast_light_enveloped.env_release_time * 2, (float)oelkast_light_enveloped.duration * 2, oelkast_light_enveloped.color_red, oelkast_light_enveloped.color_green, oelkast_light_enveloped.color_blue);
         break;
 
     case 2:
