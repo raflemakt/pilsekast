@@ -55,6 +55,7 @@ void loop()
     button_bottom.loop();
     uint8_t drum_reading = getDrumSensor();
     uint8_t potmeter_reading = potmeter_a.read();
+    
 
 
     // TODO: Flytt til egen fil? AccessPointTriggers.h og AccessPointMenu.h
