@@ -67,6 +67,8 @@ namespace AccessPointTriggers
             Serial.println("  detected TELEPILS_NOISE packet");
             Serial.print("    noise level: ");
             Serial.println(telepils_noise.noise_level);
+            Serial.print("    noise record: ");
+            Serial.println(telepils_noise.noise_record);
         }
         break;
 

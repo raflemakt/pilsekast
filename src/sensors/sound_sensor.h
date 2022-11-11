@@ -15,6 +15,9 @@ public:
   int sig;
   unsigned long sampleMillis; // sample window
 
+  uint8_t noiseThreshold = 80; // can be fetched by class calls
+  uint8_t noiseRecord = 0;
+
   unsigned int peakToPeak = 0; // peak-to-peak level
   unsigned int signalMax = 0;
   unsigned int signalMin = 4095;
@@ -44,6 +47,10 @@ public:
       peakToPeak = signalMax - signalMin; // max - min = peak-peak amplitude
       sig = map(peakToPeak, 0, 4095, 0, 255);
       uint8_t sig_uint8_t = sig;
+      if (sig_uint8_t > noiseRecord)
+      {
+        noiseRecord = sig_uint8_t;
+      }
 
       sampleMillis = millis();
       peakToPeak = 0;

@@ -47,10 +47,11 @@ namespace Node
         // LedStripCustomUpdate(0.25,90);
         // ICMloop();
         uint8_t noise = mySound.getNoise();
-        if (noise > 100)
+        if (noise > mySound.noiseThreshold)
         {
             telepils_noise.pkg_header = ProtocolDescriptor::TELEPILS_NOISE;
             telepils_noise.noise_level = noise;
+            telepils_noise.noise_record = mySound.noiseRecord;
             LocalNetworkInterface::send<TelepilsNoise>(&telepils_noise, BROADCAST);
         }
     }
