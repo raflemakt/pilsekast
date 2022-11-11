@@ -44,20 +44,20 @@ public:
     }
     else
     {
-      peakToPeak = signalMax - signalMin; // max - min = peak-peak amplitude
-      sig = map(peakToPeak, 0, 4095, 0, 255);
+      peakToPeak = signalMax - signalMin;     // max - min = peak-peak amplitude
+      sig = map(peakToPeak, 0, 4095, 0, 255); // map into 8-bit
       uint8_t sig_uint8_t = sig;
-      if (sig_uint8_t > noiseRecord)
+      if (sig_uint8_t > noiseRecord) // Keeps a noise record
       {
         noiseRecord = sig_uint8_t;
       }
-
+      // reset data
       sampleMillis = millis();
       peakToPeak = 0;
       signalMax = 0;
       signalMin = 4095;
 
-      return sig_uint8_t;
+      return sig_uint8_t; // returns sound intensity in 8-bits
     }
   }
 };
