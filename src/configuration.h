@@ -12,7 +12,7 @@
 //#define HAS_TTGO_SCREEN
 
 // Antall lys i LED-stripe. 0 --> ingen LED-stripe
-const uint8_t LED_STRIP_LED_AMOUNT = 20;
+#define LED_STRIP_LED_AMOUNT 20
 
 // Aktiver/deaktiver debug-printing til seriemonitor
 const bool DEBUG_PRINT_TO_SERIAL = true;
