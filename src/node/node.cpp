@@ -69,7 +69,7 @@ namespace Node
             uint8_t accv=mapfloat(acc,0,3.5,0,255);
             telepils_acceleration.acceleration = accv;
             LocalNetworkInterface::send<TelePilsAcceleration>(&telepils_acceleration, BROADCAST);
-            delay(500);
+            delay(200);
 
 
         }
