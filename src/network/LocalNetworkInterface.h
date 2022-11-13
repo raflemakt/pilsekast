@@ -4,7 +4,7 @@
 
 #include "network/LocalNetworkInterface.h"
 #include "network/PacketHandler.h"
-#include "UserInterface/StringFormatters.h"
+#include "utils/StringFormatters.h"
 
 #define BROADCAST 0
 

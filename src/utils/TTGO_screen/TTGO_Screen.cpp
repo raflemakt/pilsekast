@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include "UserInterface/TTGO_screen/TTGO_Screen.h"
-#include "UserInterface/StringFormatters.h"
+#include "utils/TTGO_screen/TTGO_Screen.h"
+#include "utils/StringFormatters.h"
 #include "network/Registers.h"
 #include "network/LocalNetworkInterface.h"
 

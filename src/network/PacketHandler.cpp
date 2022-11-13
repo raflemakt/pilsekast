@@ -3,7 +3,7 @@
 #include "network/PacketHandler.h"
 #include "network/LocalNetworkInterface.h"
 #include "network/Registers.h"
-#include "UserInterface/StringFormatters.h"
+#include "utils/StringFormatters.h"
 
 namespace PacketHandler
 {

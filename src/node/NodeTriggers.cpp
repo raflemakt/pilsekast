@@ -8,7 +8,7 @@
 #include "LedStrip/LedStripSimpleHue.h"
 
 #ifdef HAS_TTGO_SCREEN
-#include "UserInterface/TTGO_screen/TTGO_Screen.h"
+#include "utils/TTGO_screen/TTGO_Screen.h"
 #endif
 
 namespace NodeTriggers

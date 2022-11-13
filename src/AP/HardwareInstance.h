@@ -1,8 +1,8 @@
 #pragma once
 
 #include <ezButton.h>
-#include "UserInterface/Potmeter.h"
-#include "UserInterface/LedRGB.h"
+#include "utils/Potmeter.h"
+#include "utils/LedRGB.h"
 
 
 extern ezButton button_bottom;

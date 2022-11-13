@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ezButton.h>
-#include "UserInterface/LedRGB.h"
+#include "utils/LedRGB.h"
 #include "sensors/sound_sensor.h"
 
 extern ezButton button_zero;

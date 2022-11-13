@@ -2,10 +2,10 @@
 
 #include <Arduino.h>
 #include "network/LocalNetworkInterface.h"
-#include "UserInterface/Messages.h"
+#include "network/Registers.h"
+#include "utils/Messages.h"
 #include "node/NodeTriggers.h"
 #include "node/HardwareInstance.h"
-#include "network/Registers.h"
 
 #ifdef HAS_ICM_SENSOR
 #include "sensors/icm_sensors/icm_sensors.h"
@@ -18,7 +18,7 @@
 #endif
 
 #ifdef HAS_TTGO_SCREEN
-#include "UserInterface/TTGO_screen/TTGO_Screen.h"
+#include "utils/TTGO_screen/TTGO_Screen.h"
 #endif
 
 
