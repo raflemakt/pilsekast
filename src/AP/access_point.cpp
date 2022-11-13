@@ -1,51 +1,43 @@
-#include <Arduino.h>
 #include "AP/access_point.h"
-#include "../configuration.h"
-#include "network/LocalNetworkInterface.h"
-#include "utils/StringFormatters.h"
-#include "utils/Messages.h"
-#include "sensors/snare_sensors.h"
-#include "network/PacketHandler.h"
-#include "network/Registers.h"
-#include "AP/HardwareInstance.h"
-#include "AP/AccessPointTriggers.h"
 
-#ifdef HAS_TTGO_SCREEN
-#include "UserInterface/TTGO_screen/TTGO_Screen.h"
-#endif
+/* =========== access_point.cpp ===========
+*  Prosedyre som kjøres på aksesspunktet (AP) som er montert på basstromme.
+*
+*  AccessPoint::setup()                    kjøres én gang når AP starter
+*  AccessPoint::loop()                     kjøres kontinuerlig så lenge AP er på
+*  AccessPoint::on_local_data_receive()    kjøres automatisk av esp_now når vi får pakke
+*  AccessPoint::on_local_data_send()       kjøres automatisk av esp_now når vi sender pakke
+*/
 
 
-// FIXME: Finnes det en bedre plass/løsning for global state/objekter?
+// Menyvalg for demoprogram. Når prosjektarbeidet er over kan denne fjernes
 enum AccessPointMenuState : uint8_t {
     RANDOM_COLOR_ON_HIT = 0,
     POTMETER_DECIDE_COLOR_ON_HIT = 1,
     ADSR_FROM_POTMETERS_ON_HIT = 2
 } access_point_menu_state;
 
-uint32_t ap_loop_cycle_iterator = 0;
 
 
 namespace AccessPoint
 {
-void on_local_data_receive()
-{
+void on_local_data_receive() {
     Serial.println("  on_local_data_receive called");
     AccessPointTriggers::decide_action_on_pkg_receive();
 }
 
-void on_local_data_send()
-{
+void on_local_data_send() {
     Serial.println("  on_local_data_send called");
 }
 
-void setup()
-{
+void setup() {
     Messages::on_boot();
     LocalNetworkInterface::initialize();
     LocalNetworkInterface::register_recv_callback(on_local_data_receive);
     LocalNetworkInterface::register_send_callback(on_local_data_send);
 
     #ifdef HAS_TTGO_SCREEN
+    Serial.println("## Initializing TTGO screen");
     Screen::init();
     Screen::display_info_screen();
     Screen::update();
@@ -54,20 +46,23 @@ void setup()
     Serial.println("Init complete from access_point.cpp --> starting loop.\n");
 }
 
-void loop()
-{   
+
+void loop() {   
+    ////////////////////////////////////////////////
+    //  Hovedloop for aksesspunkt (basstromme)    //
+    ////////////////////////////////////////////////
     button_bottom.loop();
     uint8_t drum_reading = getDrumSensor();
-    uint8_t potmeter_reading = potmeter_a.read();
     
 
     #ifdef HAS_TTGO_SCREEN
-    if (ap_loop_cycle_iterator%50 == 0) Screen::update();
+    Screen::update();
     #endif
 
 
-    // TODO: Flytt til egen fil? AccessPointTriggers.h og AccessPointMenu.h
-    
+    // ========= Demoprosedyre for prosjektarbeidet =========
+    // --> Brukeren kan trykke på knapp '0' for å bytte 'access_point_menu_state'
+    // --> Trommesensoren er aktiv, og gjør forskjellige ting avhengig av hvilken meny vi er i
     switch (access_point_menu_state) {
         case AccessPointMenuState::RANDOM_COLOR_ON_HIT: {
 
@@ -86,7 +81,8 @@ void loop()
         } break;
         
         case AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT: {
-            led_a.set_color(potmeter_reading);
+            uint8_t potmeter_a_reading = potmeter_a.read();
+            led_a.set_color(potmeter_a_reading);
 
             #ifdef HAS_TTGO_SCREEN
             Screen::display_window("Modus: POTMETER_DECIDE_COLOR_ON_HIT", 10, 90, 200, 35);
@@ -95,7 +91,7 @@ void loop()
             if (drum_reading > 0){
                 Serial.println("\n## Drum was hit while in POTMETER_DECIDE_COLOR_ON_HIT");
                 oelkast_light_simple_hue.intensity = drum_reading;
-                oelkast_light_simple_hue.hue = potmeter_reading;
+                oelkast_light_simple_hue.hue = potmeter_a_reading;
 
                 LocalNetworkInterface::send<OelkastLightSimpleHue>(&oelkast_light_simple_hue, BROADCAST);
             }
@@ -131,8 +127,10 @@ void loop()
                 Serial.print(access_point_menu_state);
                 Serial.println();
             }
-    }
+    }  // end of switch (access_point_menu_state)
 
+
+    // Bytter 'access_point_menu_state' når brukeren trykker på knapp '0'
     if (button_bottom.isPressed()) {
         int("\n## Changing menu state: ");
         if (access_point_menu_state == AccessPointMenuState::RANDOM_COLOR_ON_HIT) {
@@ -149,7 +147,5 @@ void loop()
         }
     }
 
-    ap_loop_cycle_iterator++;
-
-}
-}
+} // end of void loop()
+} // end of namespace AccessPoint
