@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "UserInterface/TTGO_screen/TTGO_Screen.h"
 #include "UserInterface/StringFormatters.h"
 #include "network/Registers.h"
@@ -5,13 +6,19 @@
 
 #ifdef HAS_TTGO_SCREEN
 
+
+
 namespace Screen
 {
+const uint32_t TTGO_SCREEN_UPDATE_FPS = 30;
+const uint32_t TTGO_SCREEN_UPDATE_DELAY_MS = 1000 / TTGO_SCREEN_UPDATE_FPS;
 const uint16_t SCR_WIDTH = 239;     // Nullindeksert
 const uint16_t SCR_HEIGTH = 135;    // Nullindeksert
 const auto BACKGROUND_COLOR = TFT_BLACK;
 const uint32_t TFT_MOTSTANDEN_GREEN = 13100;
 const uint32_t TFT_MOTSTANDEN_BLUE = 13371;
+
+uint32_t last_screen_update_timer;
 
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite background = TFT_eSprite(&tft);
@@ -40,7 +47,10 @@ void init() {
 }
 
 void update() {
-    background.pushSprite(0, 0);
+    if (millis() - last_screen_update_timer > TTGO_SCREEN_UPDATE_DELAY_MS) {
+        background.pushSprite(0, 0);
+        last_screen_update_timer = millis();
+    }
 }
 
 void display_window(const char *window_name, uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth) {

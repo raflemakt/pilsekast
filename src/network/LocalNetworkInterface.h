@@ -17,14 +17,14 @@ void initialize();
 void register_recv_callback(UserCallbackFunction callback_function);
 void register_send_callback(UserCallbackFunction callback_function);
 void send_binary_package(const uint8_t *peer_addr, const uint8_t *data, size_t len);
-void send_buffer(MacAddress destination_address);
+void send_buffer(const MacAddress destination_address);
 
 extern uint8_t transmission_buffer[TRANSMISSION_BUFFER_SIZE];
 extern uint8_t transmission_size;
 extern MacAddress my_mac_address;
 
 template<typename T>
-void send(T* package, MacAddress destination_address) {
+void send(T* package, const MacAddress destination_address) {
     Serial.println("\n## User called the 'send<pkg_type>' function");
     transmission_size = sizeof(T);
 

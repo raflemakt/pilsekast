@@ -133,7 +133,7 @@ void send_binary_package(const uint8_t *peer_addr, const uint8_t *data, size_t l
     Serial.println(esp_err_to_name(result));
 }
 
-void send_buffer(MacAddress destination_address) {
+void send_buffer(const MacAddress destination_address) {
     Serial.print("  destination: ");
     Serial.println(Format::mac_addr_from_array(destination_address));
 
