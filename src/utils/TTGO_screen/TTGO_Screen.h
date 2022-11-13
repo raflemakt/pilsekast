@@ -16,7 +16,8 @@
 
 namespace Screen
 {
-extern TFT_eSPI tft;
+extern TFT_eSprite buffer;  // <-- Dårlig idé å la bruker styre med denne...
+
 extern const uint16_t SCR_HEIGTH;
 extern const uint16_t SCR_WIDTH;
 

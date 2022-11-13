@@ -6,6 +6,12 @@
 
 #ifdef HAS_TTGO_SCREEN
 
+/* ======= velkommen til skjermkoden =======
+* Her finner du mange magiske tall og annet fælt. En vakker dag vil vi kanskje
+* refaktorisere denne koden. Kanskje til en skikkelig skjermprotokoll...
+* Hva med wayland?
+*
+*/
 
 
 namespace Screen
@@ -21,15 +27,15 @@ const uint32_t TFT_MOTSTANDEN_BLUE = 13371;
 uint32_t last_screen_update_timer;
 
 TFT_eSPI tft = TFT_eSPI();
-TFT_eSprite background = TFT_eSprite(&tft);
+TFT_eSprite buffer = TFT_eSprite(&tft);
 TFT_eSprite envelope_window = TFT_eSprite(&tft);
 TFT_eSprite generic_window = TFT_eSprite(&tft);
 TFT_eSprite motstanden_logo_120 = TFT_eSprite(&tft);
 TFT_eSprite motstanden_logo_64 = TFT_eSprite(&tft);
 
 void configure_sprites() {
-    background.createSprite(SCR_WIDTH+1, SCR_HEIGTH+1);
-    background.fillSprite(BACKGROUND_COLOR);
+    buffer.createSprite(SCR_WIDTH+1, SCR_HEIGTH+1);
+    buffer.fillSprite(BACKGROUND_COLOR);
 
     motstanden_logo_120.createSprite(120, 120);
     motstanden_logo_120.setSwapBytes(true);
@@ -48,7 +54,7 @@ void init() {
 
 void update() {
     if (millis() - last_screen_update_timer > TTGO_SCREEN_UPDATE_DELAY_MS) {
-        background.pushSprite(0, 0);
+        buffer.pushSprite(0, 0);
         last_screen_update_timer = millis();
     }
 }
@@ -62,7 +68,7 @@ void display_window(const char *window_name, uint16_t origin_x, uint16_t origin_
     generic_window.drawRect(0, 0, width, heigth, window_border_color);
     generic_window.drawFastHLine(0, window_decoration_heigth, width, window_border_color);
     generic_window.drawString(window_name, 3, 1, 1);
-    generic_window.pushToSprite(&background, origin_x, origin_y);
+    generic_window.pushToSprite(&buffer, origin_x, origin_y);
 }
 
 void display_adsrd_envelope_transient_component(uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth) {
@@ -96,44 +102,53 @@ void display_adsrd_envelope_transient_component(uint16_t origin_x, uint16_t orig
     envelope_window.drawLine(duration_end_x, sustain_y, release_end_x, heigth, graph_color);
 
     // Draw to background
-    envelope_window.pushToSprite(&background, origin_x, origin_y);
+    envelope_window.pushToSprite(&buffer, origin_x, origin_y);
 }
 
 void display_generic_background(const char* header_text) {
-    background.fillSprite(BACKGROUND_COLOR);
-    background.drawRect(0, 0, SCR_WIDTH, SCR_HEIGTH, TFT_MOTSTANDEN_GREEN);
-    motstanden_logo_64.pushToSprite(&background, SCR_WIDTH-66, 3, TFT_BLACK);
-    background.drawString(header_text, 4, 0, 1);
+    buffer.fillSprite(BACKGROUND_COLOR);
+    buffer.drawRect(0, 0, SCR_WIDTH, SCR_HEIGTH, TFT_MOTSTANDEN_GREEN);
+    motstanden_logo_64.pushToSprite(&buffer, SCR_WIDTH-66, 3, TFT_BLACK);
+    buffer.drawString(header_text, 4, 0, 1);
 }
 
 void display_info_screen() {
-    background.fillSprite(BACKGROUND_COLOR);
-    motstanden_logo_120.pushToSprite(&background, 4, 12, TFT_BLACK);
-    background.drawRect(0, 0, SCR_WIDTH, SCR_HEIGTH, TFT_MOTSTANDEN_GREEN);
+    buffer.fillSprite(BACKGROUND_COLOR);
+    motstanden_logo_120.pushToSprite(&buffer, 4, 12, TFT_BLACK);
+    buffer.drawRect(0, 0, SCR_WIDTH, SCR_HEIGTH, TFT_MOTSTANDEN_GREEN);
     #ifdef IS_ACCESS_POINT
-    background.drawString("Pilsekast AKSESSPUNKT", 4, 0, 1);
+    buffer.drawString("Pilsekast AKSESSPUNKT", 4, 0, 1);
     #else
-    background.drawString("Pilsekast INSTRUMENTNODE", 4, 0, 1);
+    buffer.drawString("Pilsekast INSTRUMENTNODE", 4, 0, 1);
     #endif
-    background.drawString("MAC: ", 130, 20, 1);
-    background.drawString(Format::mac_addr_from_array(LocalNetworkInterface::my_mac_address), 130, 29, 1);
+    buffer.drawString("MAC: ", 130, 20, 1);
+    buffer.drawString(Format::mac_addr_from_array(LocalNetworkInterface::my_mac_address), 130, 29, 1);
 
-    background.drawString("Nodenavn:", 130, 50, 1);
-    background.drawString(NODE_NAME, 130, 59, 1);
+    buffer.drawString("Nodenavn:", 130, 50, 1);
+    buffer.drawString(NODE_NAME, 130, 59, 1);
 
-    background.drawString("Instrumenttype:", 130, 70, 1);
-    background.drawString(INSTRUMENT_TYPE, 130, 79, 1);
+    buffer.drawString("Instrumenttype:", 130, 70, 1);
+    buffer.drawString(INSTRUMENT_TYPE, 130, 79, 1);
 }
 
 void display_adsr_screen() {
     display_generic_background("Modus: ADSR_FROM_POTMETERS_ON_HIT");
-    background.drawString("Atk: ", 30, 30, 1);
-    display_adsrd_envelope_transient_component(5, 70, 220, 40);
+    buffer.drawString("env_attack_time: ", 10, 12, 1); 
+    buffer.drawString(String(oelkast_light_enveloped.env_attack_time), 125, 12, 1);
+    buffer.drawString("env_decay_time: ", 10, 22, 1); 
+    buffer.drawString(String(oelkast_light_enveloped.env_decay_time), 125, 22, 1);
+    buffer.drawString("env_sustain_level: ", 10, 32, 1); 
+    buffer.drawString(String(oelkast_light_enveloped.env_sustain_level), 125, 32, 1);
+    buffer.drawString("env_release_time: ", 10, 42, 1); 
+    buffer.drawString(String(oelkast_light_enveloped.env_release_time), 125, 42, 1);
+    buffer.drawString("duration: ", 10, 52, 1); 
+    buffer.drawString(String(oelkast_light_enveloped.duration), 125, 52, 1);
+    display_adsrd_envelope_transient_component(5, 70, 229, 60);
 }
 
 void display_test_screen() {
-    motstanden_logo_120.pushToSprite(&background, 4, 12, TFT_BLACK);
-    motstanden_logo_64.pushToSprite(&background, 133, 33, TFT_BLACK);
+    motstanden_logo_120.pushToSprite(&buffer, 4, 12, TFT_BLACK);
+    motstanden_logo_64.pushToSprite(&buffer, 133, 33, TFT_BLACK);
     tft.drawRect(0, 0, 237, 135, TFT_MOTSTANDEN_GREEN);  // Heile skjermen (238x136 ??)
     tft.setCursor(0, 0);
     tft.print("Pilsekast AKSESSPUNKT");
