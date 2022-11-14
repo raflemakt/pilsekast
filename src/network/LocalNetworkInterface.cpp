@@ -19,12 +19,16 @@ esp_now_peer_info_t peer_buffer = {};
 esp_now_peer_num_t peer_num;
 
 
-LocalNetworkInterface::MacAddress LocalNetworkInterface::my_mac_address = {0};
-LocalNetworkInterface::UserCallbackFunction user_configured_recv_cb = nullptr;
-LocalNetworkInterface::UserCallbackFunction user_configured_send_cb = nullptr;
+namespace LocalNetworkInterface
+{
+MacAddress my_mac_address = {0};
+UserCallbackFunction user_configured_recv_cb = nullptr;
+UserCallbackFunction user_configured_send_cb = nullptr;
 
-uint8_t LocalNetworkInterface::transmission_buffer[TRANSMISSION_BUFFER_SIZE] = {0};
-uint8_t LocalNetworkInterface::transmission_size;
+uint8_t transmission_buffer[TRANSMISSION_BUFFER_SIZE] = {0};
+uint8_t transmission_size;
+
+TransmissionStats transmission_stats = {0};
 
 
 void add_address_to_peers(const uint8_t *mac_addr) {
@@ -57,9 +61,18 @@ void esp_now_on_data_sent(const uint8_t *mac_addr, esp_now_send_status_t status)
 
     if (status != 0) {
         Serial.println(" (fail)\n");
+        transmission_stats.total_pkg_send_fails ++;
         return;
     } else {
         Serial.println(" (success)");
+
+        transmission_stats.total_pkg_sent ++;
+        transmission_stats.total_bytes_sent += transmission_size;
+
+        Serial.print("    total_pkg_sent: ");
+        Serial.println(transmission_stats.total_pkg_sent);
+        Serial.print("    total_bytes_sent: ");
+        Serial.println(transmission_stats.total_bytes_sent);
     }
     user_configured_send_cb();
 }
@@ -69,6 +82,14 @@ void esp_now_on_data_receive(const uint8_t *mac_addr, const uint8_t *incoming_da
     Serial.println(Format::mac_addr_from_array(mac_addr));
     Serial.print("  bytes received: ");
     Serial.println(bytes_received);
+
+    transmission_stats.total_pkg_received ++;
+    transmission_stats.total_bytes_received += bytes_received;
+    
+    Serial.print("    total_pkg_received: ");
+    Serial.println(transmission_stats.total_pkg_received);
+    Serial.print("    total_bytes_received: ");
+    Serial.println(transmission_stats.total_bytes_received);
     
     add_address_to_peers(mac_addr);
     PacketHandler::move_data_to_buffer(incoming_data, bytes_received);
@@ -76,11 +97,8 @@ void esp_now_on_data_receive(const uint8_t *mac_addr, const uint8_t *incoming_da
     user_configured_recv_cb();
 }
 
-
-namespace LocalNetworkInterface
-{
 void initialize(){
-    WiFi.macAddress(my_mac_address);  // Dårlig navngitt funksjon: vi setter ikke MAC, men lagrer den
+    WiFi.macAddress(my_mac_address);  // Vi setter ikke MAC her, men leser den over i 'my_mac_address'
     
     Serial.println("WiFi mode WIFI_STA");
     Serial.print("  my MAC: ");
@@ -118,19 +136,6 @@ void register_recv_callback(UserCallbackFunction callback_function) {
 void register_send_callback(UserCallbackFunction callback_function) {
     Serial.println("  user send cb registered");
     user_configured_send_cb = callback_function;
-}
-
-void send_binary_package(const uint8_t *peer_addr, const uint8_t *data, size_t len) {
-    Serial.println("\n## User called the 'send_binary_package' function");
-    Serial.print("  destination: ");
-    Serial.println(Format::mac_addr_from_array(peer_addr));
-
-    PacketHandler::move_data_to_buffer(data, len);
-    esp_err_t result = esp_now_send(peer_addr, data, len);
-    LocalNetworkInterface::transmission_size = len;
-
-    Serial.print("  esp_now_send result: ");
-    Serial.println(esp_err_to_name(result));
 }
 
 void send_buffer(const MacAddress destination_address) {

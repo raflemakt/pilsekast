@@ -42,8 +42,11 @@ void decide_action_on_pkg_receive() {
             if (telepils_announce.has_icm_sensor)     Serial.println("    ->ICM motion sensor");
             if (telepils_announce.has_sound_sensor)   Serial.println("    ->sound sensor");
             if (telepils_announce.has_ttgo_screen)    Serial.println("    ->TTGO screen");
-            if (telepils_announce.led_strip_led_amount) Serial.print("    ->LED strip with ");
-            Serial.print(telepils_announce.led_strip_led_amount); Serial.println(" LEDs");
+            if (telepils_announce.led_strip_led_amount) {
+                Serial.print("    ->LED strip with ");
+                Serial.print(telepils_announce.led_strip_led_amount);
+                Serial.println(" LEDs");
+            }
             if (telepils_announce.is_access_point)  Serial.println("  warning: Node is configured as access point");
         } break;
 

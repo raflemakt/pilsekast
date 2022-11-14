@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../configuration.h"
+#include "configuration.h"
 
-#include "network/LocalNetworkInterface.h"
 #include "network/PacketHandler.h"
 #include "utils/StringFormatters.h"
 
@@ -13,15 +12,24 @@ namespace LocalNetworkInterface
 typedef uint8_t MacAddress[6];
 typedef void(*UserCallbackFunction)();
 
+struct TransmissionStats {
+    uint16_t total_pkg_received;
+    uint16_t total_pkg_sent;
+    uint16_t total_bytes_received;
+    uint16_t total_bytes_sent;
+    uint16_t total_pkg_send_fails;
+};
+
+
 void initialize();
 void register_recv_callback(UserCallbackFunction callback_function);
 void register_send_callback(UserCallbackFunction callback_function);
-void send_binary_package(const uint8_t *peer_addr, const uint8_t *data, size_t len);
 void send_buffer(const MacAddress destination_address);
 
 extern uint8_t transmission_buffer[TRANSMISSION_BUFFER_SIZE];
 extern uint8_t transmission_size;
 extern MacAddress my_mac_address;
+extern TransmissionStats transmission_stats;
 
 template<typename T>
 void send(T* package, const MacAddress destination_address) {

@@ -22,6 +22,7 @@ extern const uint16_t SCR_HEIGTH;
 extern const uint16_t SCR_WIDTH;
 
 void init();
+void push();
 void update();
 void display_window(const char *window_name, uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth);
 void display_generic_background(const char* header_text);
@@ -29,6 +30,7 @@ void display_test_screen();
 void display_info_screen();
 void display_adsr_screen();
 void display_adsrd_envelope_transient_component(uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth);
+void display_pkg_stat_component(uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth);
 
 }
 

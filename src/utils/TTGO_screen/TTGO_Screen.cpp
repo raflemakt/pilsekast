@@ -16,7 +16,7 @@
 
 namespace Screen
 {
-const uint32_t TTGO_SCREEN_UPDATE_FPS = 30;
+const uint32_t TTGO_SCREEN_UPDATE_FPS = 15;
 const uint32_t TTGO_SCREEN_UPDATE_DELAY_MS = 1000 / TTGO_SCREEN_UPDATE_FPS;
 const uint16_t SCR_WIDTH = 239;     // Nullindeksert
 const uint16_t SCR_HEIGTH = 135;    // Nullindeksert
@@ -29,6 +29,7 @@ uint32_t last_screen_update_timer;
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite buffer = TFT_eSprite(&tft);
 TFT_eSprite envelope_window = TFT_eSprite(&tft);
+TFT_eSprite pkg_stat_window = TFT_eSprite(&tft);
 TFT_eSprite generic_window = TFT_eSprite(&tft);
 TFT_eSprite motstanden_logo_120 = TFT_eSprite(&tft);
 TFT_eSprite motstanden_logo_64 = TFT_eSprite(&tft);
@@ -52,8 +53,12 @@ void init() {
     configure_sprites();
 }
 
+void push() {
+    buffer.pushSprite(0, 0);
+}
+
 void update() {
-    if (millis() - last_screen_update_timer > TTGO_SCREEN_UPDATE_DELAY_MS) {
+    if (millis() - last_screen_update_timer > 30){//TTGO_SCREEN_UPDATE_DELAY_MS) {
         buffer.pushSprite(0, 0);
         last_screen_update_timer = millis();
     }
@@ -103,6 +108,43 @@ void display_adsrd_envelope_transient_component(uint16_t origin_x, uint16_t orig
 
     // Draw to background
     envelope_window.pushToSprite(&buffer, origin_x, origin_y);
+}
+
+void display_pkg_stat_component(uint16_t origin_x, uint16_t origin_y, uint16_t width, uint16_t heigth) {
+    auto pad_x = 3;
+    auto pad_y = 3;
+    auto col_width = (2*pad_x + width) / 4;
+    auto col_pkg_x = col_width + pad_x;
+    auto col_byte_x = col_pkg_x + col_width;
+    auto col_failed_x = col_byte_x + col_width;
+    auto row_heigth_y = 9;
+
+    pkg_stat_window.createSprite(width, heigth);
+    pkg_stat_window.fillSprite(BACKGROUND_COLOR);
+    pkg_stat_window.drawRect(0, 0, width, heigth, TFT_MOTSTANDEN_BLUE);
+
+    // Column 1
+    pkg_stat_window.drawString("TOT:", pad_x, pad_y, 1);
+    pkg_stat_window.drawString("Ut:",  pad_x, pad_y + row_heigth_y, 1);
+    pkg_stat_window.drawString("Inn:", pad_x, pad_y + (row_heigth_y*2), 1);
+
+    // Column 2
+    pkg_stat_window.drawString("pkg:", col_pkg_x, pad_y, 1);
+    pkg_stat_window.drawString(String(LocalNetworkInterface::transmission_stats.total_pkg_sent),     col_pkg_x, pad_y + row_heigth_y, 1);
+    pkg_stat_window.drawString(String(LocalNetworkInterface::transmission_stats.total_pkg_received), col_pkg_x, pad_y + (row_heigth_y*2), 1);
+
+    // Column 3
+    pkg_stat_window.drawString("byte:", col_byte_x, pad_y, 1);
+    pkg_stat_window.drawString(String(LocalNetworkInterface::transmission_stats.total_bytes_sent),     col_byte_x, pad_y + row_heigth_y, 1);
+    pkg_stat_window.drawString(String(LocalNetworkInterface::transmission_stats.total_bytes_received), col_byte_x, pad_y + (row_heigth_y*2), 1);
+
+    // Column 4
+    pkg_stat_window.drawString("tapt:", col_failed_x, pad_y, 1);
+    pkg_stat_window.drawString(String(LocalNetworkInterface::transmission_stats.total_pkg_send_fails),     col_failed_x, pad_y + row_heigth_y, 1);
+    pkg_stat_window.drawString("-", col_failed_x, pad_y + (row_heigth_y*2), 1);
+
+    // Draw to background
+    pkg_stat_window.pushToSprite(&buffer, origin_x, origin_y);
 }
 
 void display_generic_background(const char* header_text) {

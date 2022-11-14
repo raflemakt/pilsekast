@@ -24,6 +24,10 @@ namespace AccessPoint
 void on_local_data_receive() {
     Serial.println("  on_local_data_receive called");
     AccessPointTriggers::decide_action_on_pkg_receive();
+
+    #ifdef HAS_TTGO_SCREEN
+    Screen::display_pkg_stat_component(4, 12, 121, 120);
+    #endif
 }
 
 void on_local_data_send() {

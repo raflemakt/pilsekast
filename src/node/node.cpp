@@ -19,10 +19,18 @@ void on_local_data_receive() {
     Serial.println("  on_local_data_receive called");
     last_pkg_receive_timer = millis();
     NodeTriggers::decide_action_on_pkg_receive();
+
+    #ifdef HAS_TTGO_SCREEN
+    Screen::display_pkg_stat_component(0, Screen::SCR_HEIGTH-40, Screen::SCR_WIDTH, 40);
+    #endif
 }
 
 void on_local_data_send() {
     Serial.println("  on_local_data_send called");
+
+    #ifdef HAS_TTGO_SCREEN
+    Screen::display_pkg_stat_component(0, Screen::SCR_HEIGTH-40, Screen::SCR_WIDTH, 40);
+    #endif
 }
 
 void setup() {
