@@ -4,6 +4,7 @@
 #include "network/LocalNetworkInterface.h"
 #include "network/Registers.h"
 #include "utils/StringFormatters.h"
+#include "utils/Logging.h"
 
 namespace PacketHandler
 {
@@ -11,7 +12,7 @@ namespace PacketHandler
     {
         if (size > TRANSMISSION_BUFFER_SIZE)
         {
-            Serial.println("  discard data: too large for buffer");
+            LOGLN("  discard data: too large for buffer");
             return;
         }
 
@@ -19,18 +20,18 @@ namespace PacketHandler
         memcpy(&LocalNetworkInterface::transmission_buffer, data, size);
         LocalNetworkInterface::transmission_size = size;
 
-        Serial.println("  overwriting transmission buffer");
-        Serial.print("    bytes: ");
-        Serial.println(size);
+        LOGLN("  overwriting transmission buffer");
+        LOG("    bytes: ");
+        LOGLN(size);
 
-        Serial.print("    data passed to function: ");
-        Serial.println(Format::array_as_decimal(data, size));
+        LOG("    data passed to function: ");
+        LOGLN(Format::array_as_decimal(data, size));
 
-        Serial.print("    transmission buffer (dec): ");
-        Serial.println(Format::array_as_decimal(LocalNetworkInterface::transmission_buffer, size));
+        LOG("    transmission buffer (dec): ");
+        LOGLN(Format::array_as_decimal(LocalNetworkInterface::transmission_buffer, size));
 
-        Serial.print("    transmission buffer (hex): ");
-        Serial.println(Format::array_as_hex(LocalNetworkInterface::transmission_buffer, size));
+        LOG("    transmission buffer (hex): ");
+        LOGLN(Format::array_as_hex(LocalNetworkInterface::transmission_buffer, size));
     }
 
     void update_telepils_announce_packet() {
@@ -72,7 +73,7 @@ namespace PacketHandler
 
     void move_data_to_register()
     {
-        Serial.println("  deserializing package");
+        LOGLN("  deserializing package");
         ProtocolDescriptor header = (ProtocolDescriptor)LocalNetworkInterface::transmission_buffer[0];
         uint8_t size = LocalNetworkInterface::transmission_size;
         uint8_t *data = LocalNetworkInterface::transmission_buffer;
@@ -86,60 +87,60 @@ namespace PacketHandler
         //        noder i nettverket.
         case OELKAST_LIGHT_SIMPLE:
         {
-            Serial.println("    pkg_type: OELKAST_LIGHT_SIMPLE");
+            LOGLN("    pkg_type: OELKAST_LIGHT_SIMPLE");
             memcpy(&oelkast_light_simple, data, size);
         }
         break;
         case OELKAST_LIGHT_SIMPLE_HUE:
         {
-            Serial.println("    pkg_type: OELKAST_LIGHT_SIMPLE_HUE");
+            LOGLN("    pkg_type: OELKAST_LIGHT_SIMPLE_HUE");
             memcpy(&oelkast_light_simple_hue, data, size);
         }
         break;
         case OELKAST_LIGHT_ENVELOPED:
         {
-            Serial.println("    pkg_type: OELKAST_LIGHT_ENVELOPED");
+            LOGLN("    pkg_type: OELKAST_LIGHT_ENVELOPED");
             memcpy(&oelkast_light_enveloped, data, size);
         }
         break;
         case OELKAST_LIGHT_ANIMATION_MODE:
         {
-            Serial.println("    pkg_type: OELKAST_LIGHT_ANIMATION_MODE");
+            LOGLN("    pkg_type: OELKAST_LIGHT_ANIMATION_MODE");
             memcpy(&oelkast_light_animation_mode, data, size);
         }
         break;
         case TELEPILS_ANNOUNCE:
         {
-            Serial.println("    pkg_type: TELEPILS_ANNOUNCE");
+            LOGLN("    pkg_type: TELEPILS_ANNOUNCE");
             memcpy(&telepils_announce, data, size);
         }
         break;
         case TELEPILS_NODE_STATUS:
         {
-            Serial.println("    pkg_type: TELEPILS_NODE_STATUS");
+            LOGLN("    pkg_type: TELEPILS_NODE_STATUS");
             memcpy(&telepils_node_status, data, size);
         }
         break;
         case TELEPILS_TEMPERATURE:
         {
-            Serial.println("    pkg_type: TELEPILS_TEMPERATURE");
+            LOGLN("    pkg_type: TELEPILS_TEMPERATURE");
             memcpy(&telepils_temperature, data, size);
         }
         break;
         case TELEPILS_ACCELERATION:
         {
-            Serial.println("    pkg_type: TELEPILS_ACCELERATION");
+            LOGLN("    pkg_type: TELEPILS_ACCELERATION");
             memcpy(&telepils_acceleration, data, size);
         }
         case TELEPILS_NOISE:
         {
-            Serial.println("    pkg_type: TELEPILS_NOISE");
+            LOGLN("    pkg_type: TELEPILS_NOISE");
             memcpy(&telepils_noise, data, size);
         }
         break;
         default:
         {
-            Serial.println("    unknown pkg_type --> discarding data");
+            LOGLN("    unknown pkg_type --> discarding data");
         }
         }
     }

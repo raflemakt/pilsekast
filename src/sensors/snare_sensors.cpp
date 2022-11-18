@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "utils/Logging.h"
 
 // Sensor constants
 const int drum = 33;
@@ -37,8 +38,8 @@ uint8_t getDrumSensor()
                     maxSignal = maxHit;
                 }
                 hitIntensity = map(maxSignal, minHit, maxHit, 1, 255); // maps to 8-bit
-                // Serial.print("Hit intensity : ");
-                // Serial.println(hitIntensity);
+                // LOG("Hit intensity : ");
+                // LOGLN(hitIntensity);
 
                 // reset data
                 inHit = false;

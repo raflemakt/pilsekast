@@ -22,7 +22,7 @@ enum AccessPointMenuState : uint8_t {
 namespace AccessPoint
 {
 void on_local_data_receive() {
-    Serial.println("  on_local_data_receive called");
+    LOGLN("  on_local_data_receive called");
     AccessPointTriggers::decide_action_on_pkg_receive();
 
     #ifdef HAS_TTGO_SCREEN
@@ -31,7 +31,7 @@ void on_local_data_receive() {
 }
 
 void on_local_data_send() {
-    Serial.println("  on_local_data_send called");
+    LOGLN("  on_local_data_send called");
 }
 
 void setup() {
@@ -41,13 +41,13 @@ void setup() {
     LocalNetworkInterface::register_send_callback(on_local_data_send);
 
     #ifdef HAS_TTGO_SCREEN
-    Serial.println("## Initializing TTGO screen");
+    LOGLN("## Initializing TTGO screen");
     Screen::init();
     Screen::display_info_screen();
     Screen::update();
     #endif
 
-    Serial.println("Init complete from access_point.cpp --> starting loop.\n");
+    LOGLN("Init complete from access_point.cpp --> starting loop.\n");
 }
 
 
@@ -70,7 +70,7 @@ void loop() {
     switch (access_point_menu_state) {
         case AccessPointMenuState::RANDOM_COLOR_ON_HIT: {
             if (drum_reading > 0){
-                Serial.println("\n## Drum was hit while in RANDOM_COLOR_ON_HIT");
+                LOGLN("\n## Drum was hit while in RANDOM_COLOR_ON_HIT");
                 oelkast_light_simple_hue.intensity = drum_reading;
                 oelkast_light_simple_hue.hue += 53;
                 led_a.set_color(oelkast_light_simple_hue.hue);
@@ -90,7 +90,7 @@ void loop() {
             #endif
 
             if (drum_reading > 0){
-                Serial.println("\n## Drum was hit while in POTMETER_DECIDE_COLOR_ON_HIT");
+                LOGLN("\n## Drum was hit while in POTMETER_DECIDE_COLOR_ON_HIT");
                 oelkast_light_simple_hue.intensity = drum_reading;
                 oelkast_light_simple_hue.hue = potmeter_a_reading;
 
@@ -115,16 +115,16 @@ void loop() {
             #endif
 
             if (drum_reading > 0){
-                Serial.println("\n## Drum was hit while in ADSR_FROM_POTMETERS_ON_HIT");
+                LOGLN("\n## Drum was hit while in ADSR_FROM_POTMETERS_ON_HIT");
                 LocalNetworkInterface::send<OelkastLightEnveloped>(&oelkast_light_enveloped, BROADCAST);
             }
         } break;
 
         default:
             if (drum_reading > 0){
-                Serial.print("\n## Drum was hit in unknown 'AccessPointMenuState': ");
-                Serial.print(access_point_menu_state);
-                Serial.println();
+                LOG("\n## Drum was hit in unknown 'AccessPointMenuState': ");
+                LOG(access_point_menu_state);
+                LOGLN();
             }
     }  // end of switch (access_point_menu_state)
 
@@ -139,15 +139,15 @@ void loop() {
         int("\n## Changing menu state: ");
         if (access_point_menu_state == AccessPointMenuState::RANDOM_COLOR_ON_HIT) {
             access_point_menu_state = AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT;
-            Serial.println("POTMETER_DECIDE_COLOR_ON_HIT");
+            LOGLN("POTMETER_DECIDE_COLOR_ON_HIT");
         }
         else if (access_point_menu_state == AccessPointMenuState::POTMETER_DECIDE_COLOR_ON_HIT) {
             access_point_menu_state = AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT;
-            Serial.println("ADSR_FROM_POTMETERS_ON_HIT");
+            LOGLN("ADSR_FROM_POTMETERS_ON_HIT");
         }
         else if (access_point_menu_state == AccessPointMenuState::ADSR_FROM_POTMETERS_ON_HIT) {
             access_point_menu_state = AccessPointMenuState::RANDOM_COLOR_ON_HIT;
-            Serial.println("RANDOM_COLOR_ON_HIT");
+            LOGLN("RANDOM_COLOR_ON_HIT");
         }
     }
 

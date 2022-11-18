@@ -62,7 +62,7 @@ void SetRandomSeed()
         delay(1);
     }
 
-    // Serial.println(seed);
+    // LOGLN(seed);
     randomSeed(seed);
 }
 

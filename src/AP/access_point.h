@@ -6,6 +6,7 @@
 #include "configuration.h"
 #include "utils/StringFormatters.h"
 #include "utils/Messages.h"
+#include "utils/Logging.h"
 #include "sensors/snare_sensors.h"
 #include "network/LocalNetworkInterface.h"
 #include "network/PacketHandler.h"

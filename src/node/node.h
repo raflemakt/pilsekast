@@ -4,6 +4,7 @@
 #include "network/LocalNetworkInterface.h"
 #include "network/Registers.h"
 #include "utils/Messages.h"
+#include "utils/Logging.h"
 #include "node/NodeTriggers.h"
 #include "node/HardwareInstance.h"
 

@@ -1,18 +1,19 @@
 #include <Arduino.h>
 #include "configuration.h"
+#include "utils/Logging.h"
 
 namespace Messages
 {
 void on_boot(){
     #ifdef IS_ACCESS_POINT
-    Serial.println("\nPILSEKAST ACCESS POINT BOOT");
+    LOGLN("\nPILSEKAST ACCESS POINT BOOT");
     #else
-    Serial.println("\nPILSEKAST INSTRUMENT NODE BOOT");
+    LOGLN("\nPILSEKAST INSTRUMENT NODE BOOT");
     #endif
-    Serial.print("  node name: ");
-    Serial.println(NODE_NAME);
-    Serial.print("  intrument type: ");
-    Serial.println(INSTRUMENT_TYPE);
-    Serial.println();
+    LOG("  node name: ");
+    LOGLN(NODE_NAME);
+    LOG("  intrument type: ");
+    LOGLN(INSTRUMENT_TYPE);
+    LOGLN();
 }
 }

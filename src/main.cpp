@@ -7,7 +7,9 @@
 
 
 void setup(){
-  if (DEBUG_PRINT_TO_SERIAL) Serial.begin(SERIAL_BAUD_RATE);
+  #ifdef DEBUG_PRINT_TO_SERIAL
+  Serial.begin(SERIAL_BAUD_RATE);
+  #endif
 
   #ifdef IS_ACCESS_POINT
   AccessPoint::setup();

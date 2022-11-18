@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "utils/Logging.h"
 
 class SoundSensor
 {
@@ -57,7 +58,7 @@ public:
       peakToPeak = 0;
       signalMax = 0;
       signalMin = 4095;
-      // Serial.println(sig_uint8_t);
+      // LOGLN(sig_uint8_t);
 
       return sig_uint8_t;
     }

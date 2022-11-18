@@ -16,7 +16,7 @@ uint32_t last_icm_pkg_sent_timer;
 namespace Node
 {
 void on_local_data_receive() {
-    Serial.println("  on_local_data_receive called");
+    LOGLN("  on_local_data_receive called");
     last_pkg_receive_timer = millis();
     NodeTriggers::decide_action_on_pkg_receive();
 
@@ -26,7 +26,7 @@ void on_local_data_receive() {
 }
 
 void on_local_data_send() {
-    Serial.println("  on_local_data_send called");
+    LOGLN("  on_local_data_send called");
 
     #ifdef HAS_TTGO_SCREEN
     Screen::display_pkg_stat_component(0, Screen::SCR_HEIGTH-40, Screen::SCR_WIDTH, 40);
@@ -41,24 +41,24 @@ void setup() {
 
 
     #ifdef HAS_TTGO_SCREEN
-    Serial.println("## Initializing TTGO screen");
+    LOGLN("## Initializing TTGO screen");
     Screen::init();
     Screen::display_info_screen();
     #endif
 
 
     #if LED_STRIP_LED_AMOUNT > 0
-    Serial.println("## Initializing LED strip");
+    LOGLN("## Initializing LED strip");
     LedStripCustom_setup();
     #endif
 
 
     #ifdef HAS_ICM_SENSOR
-    Serial.println("## Initializing ICM sensor");
+    LOGLN("## Initializing ICM sensor");
     ICMsetup();  // Denne kræsjer med melding: [Wire.cpp:499] requestFrom(): i2cWriteReadNonStop returned Error -1: Initialization of the sensor returned: Data Underflow
     #endif
 
-    Serial.println("Sending announcement package to AP");
+    LOGLN("Sending announcement package to AP");
     PacketHandler::update_telepils_announce_packet();
     LocalNetworkInterface::send<TelepilsAnnounce>(&telepils_announce, AP_MAC_ADDRESS);
 }

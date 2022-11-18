@@ -1,5 +1,7 @@
 //Dette er hovedkoden til ICM-sensoren. Koden henter data fra akselerometeret. 
 #include "icm_sensors.h"
+#include "utils/Logging.h"
+
 #define WIRE_PORT Wire
 #define AD0_VAL 1
 unsigned long lastTime = 0;
@@ -18,11 +20,11 @@ void ICMsetup()
   while (!initialized)
   {
     myICM.begin(WIRE_PORT, AD0_VAL);
-    Serial.print(F("Initialization of the sensor returned: "));
-    Serial.println(myICM.statusString());
+    LOG(F("Initialization of the sensor returned: "));
+    LOGLN(myICM.statusString());
     if (myICM.status != ICM_20948_Stat_Ok)
     {
-      Serial.println("Trying again...");
+      LOGLN("Trying again...");
       delay(500);
     }
     else

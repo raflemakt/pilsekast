@@ -6,6 +6,7 @@
 #include "LedStrip/LedStripCustom.h"
 #include "LedStrip/lightController.h"
 #include "LedStrip/LedStripSimpleHue.h"
+#include "utils/Logging.h"
 
 #ifdef HAS_TTGO_SCREEN
 #include "utils/TTGO_screen/TTGO_Screen.h"
@@ -15,14 +16,14 @@ namespace NodeTriggers
 {
     void decide_action_on_pkg_receive()
     {
-        Serial.println("Executing action from packet");
+        LOGLN("Executing action from packet");
         ProtocolDescriptor header = (ProtocolDescriptor)LocalNetworkInterface::transmission_buffer[0];
 
         switch (header)
         {
         case OELKAST_LIGHT_SIMPLE:
         {
-            Serial.println("  detected OELKAST_LIGHT_SIMPLE packet");
+            LOGLN("  detected OELKAST_LIGHT_SIMPLE packet");
             oelkast_light_simple.intensity;
             oelkast_light_simple.duration;
             TurnOnStrip(mapfloat(oelkast_light_enveloped.intensity, 0, 255, 0, 0.5), (float)oelkast_light_simple.duration);
@@ -31,36 +32,36 @@ namespace NodeTriggers
 
         case OELKAST_LIGHT_SIMPLE_HUE:
         {
-            Serial.println("  detected OELKAST_LIGHT_SIMPLE_HUE packet");
-            Serial.print("    intensity: ");
-            Serial.println(oelkast_light_simple_hue.intensity);
-            Serial.print("    hue: ");
-            Serial.println(oelkast_light_simple_hue.hue);
+            LOGLN("  detected OELKAST_LIGHT_SIMPLE_HUE packet");
+            LOG("    intensity: ");
+            LOGLN(oelkast_light_simple_hue.intensity);
+            LOG("    hue: ");
+            LOGLN(oelkast_light_simple_hue.hue);
             TurnOnSimpleStrip(mapfloat(oelkast_light_simple_hue.intensity, 0, 255, 0, 0.5), mapfloat(oelkast_light_simple_hue.hue, 0, 255, 0, 360));
         }
         break;
 
         case OELKAST_LIGHT_ENVELOPED:
         {
-            Serial.println("  detected OELKAST_LIGHT_ENVELOPED packet");
-            Serial.print("    intensity: ");
-            Serial.println(oelkast_light_enveloped.intensity);
-            Serial.print("    color_red: ");
-            Serial.println(oelkast_light_enveloped.color_red);
-            Serial.print("    color_green: ");
-            Serial.println(oelkast_light_enveloped.color_green);
-            Serial.print("    color_blue: ");
-            Serial.println(oelkast_light_enveloped.color_blue);
-            Serial.print("    duration: ");
-            Serial.println(oelkast_light_enveloped.duration);
-            Serial.print("    env_attack_time: ");
-            Serial.println(oelkast_light_enveloped.env_attack_time);
-            Serial.print("    env_decay_time: ");
-            Serial.println(oelkast_light_enveloped.env_decay_time);
-            Serial.print("    env_sustain_level: ");
-            Serial.println(oelkast_light_enveloped.env_sustain_level);
-            Serial.print("    env_release_time: ");
-            Serial.println(oelkast_light_enveloped.env_release_time);
+            LOGLN("  detected OELKAST_LIGHT_ENVELOPED packet");
+            LOG("    intensity: ");
+            LOGLN(oelkast_light_enveloped.intensity);
+            LOG("    color_red: ");
+            LOGLN(oelkast_light_enveloped.color_red);
+            LOG("    color_green: ");
+            LOGLN(oelkast_light_enveloped.color_green);
+            LOG("    color_blue: ");
+            LOGLN(oelkast_light_enveloped.color_blue);
+            LOG("    duration: ");
+            LOGLN(oelkast_light_enveloped.duration);
+            LOG("    env_attack_time: ");
+            LOGLN(oelkast_light_enveloped.env_attack_time);
+            LOG("    env_decay_time: ");
+            LOGLN(oelkast_light_enveloped.env_decay_time);
+            LOG("    env_sustain_level: ");
+            LOGLN(oelkast_light_enveloped.env_sustain_level);
+            LOG("    env_release_time: ");
+            LOGLN(oelkast_light_enveloped.env_release_time);
 
             #ifdef HAS_TTGO_SCREEN
             // Lager et "vindu" midt på skjermen med ADSR-graf. Om vi vil gå videre med denne "vindu"-stilen burde vi
@@ -75,31 +76,31 @@ namespace NodeTriggers
 
         case OELKAST_LIGHT_ANIMATION_MODE:
         {
-            Serial.println("  detected OELKAST_LIGHT_ANIMATION_MODE packet");
+            LOGLN("  detected OELKAST_LIGHT_ANIMATION_MODE packet");
         }
         break;
 
         case TELEPILS_ANNOUNCE:
         {
-            Serial.println("  detected TELEPILS_ANNOUNCE packet");
+            LOGLN("  detected TELEPILS_ANNOUNCE packet");
         }
         break;
 
         case TELEPILS_NODE_STATUS:
         {
-            Serial.println("  detected TELEPILS_NODE_STATUS packet");
+            LOGLN("  detected TELEPILS_NODE_STATUS packet");
         }
         break;
 
         case TELEPILS_TEMPERATURE:
         {
-            Serial.println("  detected TELEPILS_TEMPERATURE packet");
+            LOGLN("  detected TELEPILS_TEMPERATURE packet");
         }
         break;
 
         default:
         {
-            Serial.println("  unknown pkg_type --> no action taken");
+            LOGLN("  unknown pkg_type --> no action taken");
         }
         }
     }
